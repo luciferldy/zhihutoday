@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 表示图片从左边退出，从可见到不可见 -->
+    <translate
+        android:duration="500"
+        android:fromXDelta="0"
+        android:toXDelta="-100.0%p" />
+    <alpha
+        android:duration="500"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.1" />
+</set>

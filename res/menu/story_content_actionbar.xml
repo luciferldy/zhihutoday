@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/story_collect"
+        android:icon="@drawable/ic_action_important"
+        android:title="收藏"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/story_share"
+        android:title="分享"
+        android:icon="@drawable/ic_action_share"
+        android:showAsAction="always">
+    </item>
+    <item android:id="@+id/story_setting"
+        android:title="设置"
+        android:showAsAction="never">
+    </item>
+</menu>

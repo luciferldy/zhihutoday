@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_lv_item_rootlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:background="@drawable/story_item_selector">
+    
+    <TextView 
+        android:id="@+id/tv_story_title"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:textColor="@android:color/black"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_alignParentRight="true"
+        android:textSize="16sp"
+        android:text="请尽量只从纯技术角度看待 12 岁的「中国最小黑客」"/>
+    
+    <ImageView
+        android:id="@+id/iv_story_img"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:maxHeight="100dp"
+        android:maxWidth="110dp"
+        android:scaleType="centerCrop"
+        android:layout_alignBottom="@id/tv_story_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@id/tv_story_title"
+        android:layout_toRightOf="@id/tv_story_title"
+        android:contentDescription="瞎扯"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/example" />
+
+</RelativeLayout>
