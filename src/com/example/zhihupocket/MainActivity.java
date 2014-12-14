@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -100,6 +101,27 @@ public class MainActivity extends Activity {
 			file.delete();
 		}
 		pic_cache.delete();
+	}
+	
+	// 清除没有图片的缓存
+	protected void clearImgCache(){
+		File[] files = pic_cache.listFiles();
+		int flag=0;
+		String img_uri;
+		ArrayList<String> imgs = new ArrayList<String>();
+		for(int i=0;i<stories_group.size();i++){
+			img_uri = stories_group.get(i).get("imguri").toString();
+			imgs.add(getPicNameOfUrl(img_uri));
+		}
+		for(File file: files){
+			flag=0;
+			if (imgs.contains(file.getName())) {
+				flag=1;
+			}
+			if(flag==0){
+				file.delete();
+			}
+		}
 	}
 	
 	@Override
@@ -189,6 +211,7 @@ public class MainActivity extends Activity {
 								});
 								
 								main_processdialog.cancel();
+								clearImgCache();
 							}
 						});
 					}
@@ -215,7 +238,7 @@ public class MainActivity extends Activity {
 				if(json_stories.getJSONObject(i).has("images")){
 					String str = json_stories.getJSONObject(i).getString("images");
 					str = getHandledURL(str);
-					System.out.println(str);
+//					System.out.println(str);
 					
 					story_item.put("images", str);
 					story_item.put("imguri", downloadPic(str, pic_cache));
@@ -253,7 +276,7 @@ public class MainActivity extends Activity {
 				
 				String str = json_topstories.getJSONObject(i).getString("image");
 				str = getHandledURL(str);
-				System.out.println(str);
+//				System.out.println(str);
 				
 				story_item.put("image", str);
 				// 同时异步获取图片的uri
@@ -407,7 +430,6 @@ public class MainActivity extends Activity {
 		}
 		
 	}
-
 	// list项目单选的监听器
 	public class StoryItemClickListener implements OnItemClickListener{
 		
@@ -478,14 +500,14 @@ public class MainActivity extends Activity {
 			}
 			// 获取图片uri
 			uri = (Uri)topstories_group.get(i).get("imguri");
-			System.out.println(uri.getPath());
+//			System.out.println(uri.getPath());
 			drawble = Drawable.createFromPath(uri.getPath());
 			fl_page_item.setBackgroundDrawable(drawble);
 			img = (ImageView)fl_page_item.getChildAt(0);
 			img.setImageDrawable(drawble);
 			tv = (TextView)fl_page_item.getChildAt(1);
 			tv.setText(topstories_group.get(i).get("title").toString());
-			System.out.println(topstories_group.get(i).get("title").toString());
+//			System.out.println(topstories_group.get(i).get("title").toString());
 //			rg = (RadioGroup)rl_page_item.getChildAt(0);
 //			rb = (RadioButton)rg.getChildAt(i);
 //			rb.setChecked(true);
