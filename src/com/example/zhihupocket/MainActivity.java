@@ -18,17 +18,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -36,16 +36,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -53,6 +51,7 @@ import android.widget.ViewFlipper;
 public class MainActivity extends Activity {
 
 	private static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
+	private static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
 	private ArrayList<HashMap<String, Object>> stories_group;
 	private ArrayList<HashMap<String, Object>> topstories_group;
 	private Handler main_thead_handler = new Handler();
@@ -61,7 +60,6 @@ public class MainActivity extends Activity {
 	private ViewFlipper vf_hotstories_show;
 	private ProgressDialog main_processdialog;
 	private GestureDetector hotstoriesclickgesture;
-	private RelativeLayout main_rl;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +82,7 @@ public class MainActivity extends Activity {
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		vf_hotstories_show = (ViewFlipper)findViewById(R.id.vf_show_hotstories);
-		main_rl = (RelativeLayout)findViewById(R.id.main_rl);
-//		main_scrollview = (ScrollView)findViewById(R.id.main_scrollview);
 		hotstoriesclickgesture = new GestureDetector(new MainGestureDetectorListener());
-//		tv_show_topstory_title = (TextView)findViewById(R.id.tv_show_topstory_title);
-//		rg_show_topstory_ifchecked = (RadioGroup)findViewById(R.id.rg_showtopstory_ifchecked);
-//		rl_contain_hotstories = (RelativeLayout)findViewById(R.id.rl_contain_topstories);
 	}
 	
 	@Override
@@ -109,10 +102,14 @@ public class MainActivity extends Activity {
 		int flag=0;
 		String img_uri;
 		ArrayList<String> imgs = new ArrayList<String>();
+		
 		for(int i=0;i<stories_group.size();i++){
-			img_uri = stories_group.get(i).get("imguri").toString();
-			imgs.add(getPicNameOfUrl(img_uri));
+			if(stories_group.get(i).containsKey("imguri")){
+				img_uri = stories_group.get(i).get("imguri").toString();
+				imgs.add(getPicNameOfUrl(img_uri));
+			}
 		}
+		
 		for(File file: files){
 			flag=0;
 			if (imgs.contains(file.getName())) {
@@ -170,13 +167,6 @@ public class MainActivity extends Activity {
 								loadListAdapter loadlistadapter = new loadListAdapter(getApplicationContext(), stories_group);
 								lv_showshortcontent.setAdapter(loadlistadapter);
 								lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener());
-//								lv_showshortcontent.setOnTouchListener(new OnTouchListener() {
-//									@Override
-//									public boolean onTouch(View arg0, MotionEvent arg1) {
-//										// TODO Auto-generated method stub
-//										return false;
-//									}
-//								});
 								
 								// 初始化flipview的内容以及滚动的实现
 								initViewFlipperData();
@@ -191,7 +181,6 @@ public class MainActivity extends Activity {
 										// getDisplayedChild方法获取的是前一个的
 										int i = vf_hotstories_show.getDisplayedChild()+1;
 										i = i<5?i:i-5;
-//										System.out.println(i+"\n"+topstories_group.get(i).get("title").toString());
 										Intent intent = new Intent(MainActivity.this, StoryContent.class);
 										intent.putExtra("stories_group", topstories_group);
 										// 万万没想到，标记的时候这个是反着来的
@@ -232,7 +221,12 @@ public class MainActivity extends Activity {
 				
 				story_item = new HashMap<String, Object>();
 				story_item.put("title", json_stories.getJSONObject(i).getString("title"));
-				story_item.put("share_url", json_stories.getJSONObject(i).getString("share_url"));
+				if (json_stories.getJSONObject(i).has("share_url")) {
+					story_item.put("share_url", json_stories.getJSONObject(i).getString("share_url"));
+				}
+				else {
+					story_item.put("share_url", MainActivity.ZHIHU_STORY_API+json_stories.getJSONObject(i).getString("id"));
+				}
 				
 				// 判断数组中是否存在images这个项目
 				if(json_stories.getJSONObject(i).has("images")){
@@ -272,11 +266,15 @@ public class MainActivity extends Activity {
 			for(int i=0;i<json_topstories.length();i++){
 				story_item = new HashMap<String, Object>();
 				story_item.put("title", json_topstories.getJSONObject(i).getString("title"));
-				story_item.put("share_url", json_topstories.getJSONObject(i).getString("share_url"));
-				
+				// 最近知乎改了接口，原来的接口不能用了
+				if(json_topstories.getJSONObject(i).has("share_url")){
+					story_item.put("share_url", json_topstories.getJSONObject(i).getString("share_url"));
+				}
+				else {
+					story_item.put("share_url", MainActivity.ZHIHU_STORY_API+json_topstories.getJSONObject(i).getString("id"));
+				}
 				String str = json_topstories.getJSONObject(i).getString("image");
 				str = getHandledURL(str);
-//				System.out.println(str);
 				
 				story_item.put("image", str);
 				// 同时异步获取图片的uri
@@ -430,6 +428,7 @@ public class MainActivity extends Activity {
 		}
 		
 	}
+	
 	// list项目单选的监听器
 	public class StoryItemClickListener implements OnItemClickListener{
 		
@@ -498,6 +497,7 @@ public class MainActivity extends Activity {
 			default:
 				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_one);
 			}
+			Log.v("MainActivity", topstories_group.size()+"");
 			// 获取图片uri
 			uri = (Uri)topstories_group.get(i).get("imguri");
 //			System.out.println(uri.getPath());
@@ -507,10 +507,6 @@ public class MainActivity extends Activity {
 			img.setImageDrawable(drawble);
 			tv = (TextView)fl_page_item.getChildAt(1);
 			tv.setText(topstories_group.get(i).get("title").toString());
-//			System.out.println(topstories_group.get(i).get("title").toString());
-//			rg = (RadioGroup)rl_page_item.getChildAt(0);
-//			rb = (RadioButton)rg.getChildAt(i);
-//			rb.setChecked(true);
 		}
 		
 	}
