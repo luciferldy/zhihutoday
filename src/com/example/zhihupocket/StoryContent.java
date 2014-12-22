@@ -2,11 +2,13 @@ package com.example.zhihupocket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +16,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-public class StoryContent extends Activity{
+public class StoryContent extends ActionBarActivity{
 	
 	private ArrayList<HashMap<String, Object>> top_or_not_stories_group;
 	private int story_order;
@@ -28,7 +30,7 @@ public class StoryContent extends Activity{
 		setContentView(R.layout.story_content);
 		
 		//添加一个回退键
-		ActionBar actionBar = getActionBar();
+		android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		initStoriesGroup();
@@ -36,7 +38,7 @@ public class StoryContent extends Activity{
 		loadStory();
 		
 	}
-	
+
 	// 初始化listView数组
 	@SuppressWarnings("unchecked")
 	public void initStoriesGroup(){

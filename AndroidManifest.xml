@@ -30,8 +30,7 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name="com.example.zhihupocket.StoryContent">
-            
+            android:name="com.example.zhihupocket.StoryContent">  
         </activity>
     </application>
 
