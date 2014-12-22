@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,8 +19,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.R.color;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -28,12 +29,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -48,7 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
 	private static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
 	private static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
@@ -60,6 +64,7 @@ public class MainActivity extends Activity {
 	private ViewFlipper vf_hotstories_show;
 	private ProgressDialog main_processdialog;
 	private GestureDetector hotstoriesclickgesture;
+	private SwipeRefreshLayout main_swiperefresh;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,18 +76,31 @@ public class MainActivity extends Activity {
 		if(!pic_cache.exists()){
 				pic_cache.mkdir();
 		}
-		Thread getTodayStoryThread = new Thread(new getAndParseJsonData());
-		getTodayStoryThread.start();
-		main_processdialog = initProgressDialog();
-		main_processdialog.show();
 	}
 
 	//初始化视图
+	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		vf_hotstories_show = (ViewFlipper)findViewById(R.id.vf_show_hotstories);
 		hotstoriesclickgesture = new GestureDetector(new MainGestureDetectorListener());
+		main_swiperefresh = (SwipeRefreshLayout)findViewById(R.id.main_swipetorefresh);
+		main_swiperefresh.setColorScheme(android.R.color.holo_blue_bright,
+				android.R.color.holo_green_light,
+				android.R.color.holo_orange_light,
+				android.R.color.holo_red_light);
+		main_swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				main_swiperefresh.setRefreshing(true);
+				Thread getandparseData = new Thread(new getAndParseJsonData());
+				getandparseData.start();
+				Log.d("MainActivity.initView", "开始刷新");
+				
+			}
+		});
 	}
 	
 	@Override
@@ -127,6 +145,16 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+            	finish();
+                return true;
+            default:
+            	return super.onOptionsItemSelected(item);
+        }
+    }
 
 	// 获取并解析json数据
 	public class getAndParseJsonData implements Runnable{
@@ -145,7 +173,8 @@ public class MainActivity extends Activity {
 					public void run() {
 						// TODO Auto-generated method stub
 						Toast.makeText(getApplicationContext(), "没有成功从网络处获得数据", Toast.LENGTH_SHORT).show();
-						main_processdialog.cancel();
+//						main_processdialog.cancel();
+						main_swiperefresh.setRefreshing(false);
 					}
 				});
 			}
@@ -198,8 +227,7 @@ public class MainActivity extends Activity {
 										return hotstoriesclickgesture.onTouchEvent(arg1);
 									}
 								});
-								
-								main_processdialog.cancel();
+							    main_swiperefresh.setRefreshing(false);
 								clearImgCache();
 							}
 						});
@@ -357,20 +385,7 @@ public class MainActivity extends Activity {
 		}	
 		httpclient.getConnectionManager().shutdown();
 		return "-1";	
-	}
-	
-	
-	// 对于进度条对话框的一些设置
-	public ProgressDialog initProgressDialog(){
-		ProgressDialog proDialog;
-		proDialog = new ProgressDialog(this);
-		proDialog.setTitle("提示！");
-		proDialog.setMessage("正在从网络获取数据……");
-		proDialog.setCancelable(false);
-		return proDialog;
-	}
-
-	
+	}	
 	// listview自定义适配器
 	public class loadListAdapter extends BaseAdapter{
 		
@@ -500,7 +515,6 @@ public class MainActivity extends Activity {
 			Log.v("MainActivity", topstories_group.size()+"");
 			// 获取图片uri
 			uri = (Uri)topstories_group.get(i).get("imguri");
-//			System.out.println(uri.getPath());
 			drawble = Drawable.createFromPath(uri.getPath());
 			fl_page_item.setBackgroundDrawable(drawble);
 			img = (ImageView)fl_page_item.getChildAt(0);
