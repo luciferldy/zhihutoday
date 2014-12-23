@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,8 +18,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.R.color;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +29,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -52,7 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
 	private static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
 	private static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
@@ -101,6 +99,9 @@ public class MainActivity extends ActionBarActivity {
 				
 			}
 		});
+		main_swiperefresh.setRefreshing(true);
+		Thread getandparseData = new Thread(new getAndParseJsonData());
+		getandparseData.start();
 	}
 	
 	@Override
