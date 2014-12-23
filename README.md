@@ -6,4 +6,5 @@ android 4.4.2
 Theme.AppCompat.Light
 
 有图有真相
+
 ![liandongyang](https://github.com/MaybeMercy/zhihutoday/blob/master/screen_shot/zhihu.PNG "主屏幕")
