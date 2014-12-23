@@ -16,7 +16,7 @@
 			    <ViewFlipper
 			        android:id="@+id/vf_show_hotstories"
 			        android:layout_width="fill_parent"
-			        android:layout_height="200dp"
+			        android:layout_height="wrap_content"
 			        android:autoStart="true"
 			        android:flipInterval="4000"
 			        android:visibility="invisible">

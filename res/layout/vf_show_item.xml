@@ -2,20 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_contain_topstories"
     android:layout_width="fill_parent"
-    android:layout_height="200dp">
+    android:layout_height="fill_parent">
+
     <ImageView
         android:id="@+id/img_show_topstory_img"
         android:layout_width="fill_parent"
         android:layout_height="200dp"
+        android:adjustViewBounds="true"
         android:contentDescription="新闻图片"
-        android:src="@drawable/example"
         android:scaleType="centerCrop"
-        android:adjustViewBounds="true" />
+        android:src="@drawable/example" />
+
      <TextView 
         android:id="@+id/tv_show_topstory_title"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
