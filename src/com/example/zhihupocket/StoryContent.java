@@ -8,7 +8,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-public class StoryContent extends ActionBarActivity{
+public class StoryContent extends Activity{
 	
 	private ArrayList<HashMap<String, Object>> top_or_not_stories_group;
 	private int story_order;
@@ -30,7 +29,7 @@ public class StoryContent extends ActionBarActivity{
 		setContentView(R.layout.story_content);
 		
 		//添加一个回退键
-		android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		initStoriesGroup();
@@ -110,6 +109,9 @@ public class StoryContent extends ActionBarActivity{
 			shareStory();
 			return true;
 		case R.id.story_collect:
+			return true;
+		case R.id.story_exit:
+			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
