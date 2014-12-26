@@ -3,7 +3,6 @@ package com.example.zhihupocket;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,52 +18,41 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.directionalviewpager.DirectionalViewPager;
+import com.example.adapter.HotStoriesPagersAdapter;
+import com.example.adapter.StoriesAdapter;
+import com.example.thread.GetStoriesAndParse;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
-	private static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
-	private static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
-	private ArrayList<HashMap<String, Object>> stories_group;
-	private ArrayList<HashMap<String, Object>> topstories_group;
-	private Handler main_thead_handler = new Handler();
+	public static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
+	public static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
+	private Handler main_thread_handler = new Handler();
 	private ListView lv_showshortcontent;
-	private File pic_cache;
-	private ViewFlipper vf_hotstories_show;
+	public static File pic_cache;
+	private DirectionalViewPager hotstoriespagers;
 	private ProgressDialog main_processdialog;
-	private GestureDetector hotstoriesclickgesture;
 	private SwipeRefreshLayout main_swiperefresh;
 	
 	@Override
@@ -84,8 +72,7 @@ public class MainActivity extends Activity {
 	@SuppressWarnings("deprecation")
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
-		vf_hotstories_show = (ViewFlipper)findViewById(R.id.vf_show_hotstories);
-		hotstoriesclickgesture = new GestureDetector(new MainGestureDetectorListener());
+		hotstoriespagers = (DirectionalViewPager)findViewById(R.id.hotstoriespagers);
 		main_swiperefresh = (SwipeRefreshLayout)findViewById(R.id.main_swipetorefresh);
 		main_swiperefresh.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
@@ -96,7 +83,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onRefresh() {
 				main_swiperefresh.setRefreshing(true);
-				Thread getandparseData = new Thread(new getAndParseJsonData());
+				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
 				getandparseData.start();
 				Log.d("MainActivity.initView", "开始刷新");
 				
@@ -105,23 +92,42 @@ public class MainActivity extends Activity {
 		main_swiperefresh.setRefreshing(true);
 		// 防止刷新时又被刷新
 		main_swiperefresh.setEnabled(false);
-		Thread getandparseData = new Thread(new getAndParseJsonData());
+		Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
 		getandparseData.start();
 	}
 	
-	@Override
-	protected void onDestroy(){
-		super.onDestroy();
-		//清空缓存
-		File[] files = pic_cache.listFiles();
-		for(File file: files){
-			file.delete();
-		}
-		pic_cache.delete();
+	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
+		// TODO Auto-generated method stub
+		//在ui线程中设置listview
+		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
+		StoriesAdapter loadlistadapter = new StoriesAdapter(getApplicationContext(), stories_group);
+		lv_showshortcontent.setAdapter(loadlistadapter);
+		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager()));
+		hotstoriespagers.setVisibility(View.VISIBLE);
+		// 添加点击监听器
+		hotstoriespagers.setOnClickListener(new View.OnClickListener() {
+			
+			@SuppressLint("NewApi")
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				// getDisplayedChild方法获取的是前一个的
+				int i = hotstoriespagers.getCurrentItem()+1;
+				i = i<5?i:i-5;
+				Intent intent = new Intent(MainActivity.this, StoryContent.class);
+				intent.putExtra("stories_group", topstories_group);
+				// 万万没想到，标记的时候这个是反着来的
+				intent.putExtra("story_order", i);
+				startActivity(intent);
+			}
+		});
+	    main_swiperefresh.setRefreshing(false);
+	    main_swiperefresh.setEnabled(true);;
+		clearImgCache(stories_group, topstories_group);
 	}
 	
 	// 清除没有图片的缓存
-	protected void clearImgCache(){
+	protected void clearImgCache(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		File[] files = pic_cache.listFiles();
 		int flag=0;
 		String img_uri;
@@ -145,14 +151,21 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	// 获得图片的名称
+	public String getPicNameOfUrl(String name){
+		String[] item_group = name.split("/");
+		return item_group[item_group.length-1];
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
 	@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
             	finish();
@@ -161,6 +174,7 @@ public class MainActivity extends Activity {
             	return super.onOptionsItemSelected(item);
         }
     }
+<<<<<<< HEAD
 
 	// 获取并解析json数据
 	public class getAndParseJsonData implements Runnable{
@@ -468,6 +482,8 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 		}
 	}
+=======
+>>>>>>> develop
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -480,138 +496,4 @@ public class MainActivity extends Activity {
 			return super.onKeyDown(keyCode, event);
 		}
 	}
-	
-	// 初始化ViewFlipper程序
-	public void initViewFlipperOfTopStories(){
-		vf_hotstories_show.removeAllViews();
-//		rg_show_topstory_ifchecked.removeAllViews();
-		
-	}
-	
-	// 初始化ViewFlipper的数据
-	@SuppressWarnings("deprecation")
-	public void initViewFlipperData(){
-		
-		FrameLayout fl_page_item;
-		Uri uri;
-		Drawable drawble;
-		TextView tv;
-		ImageView img;
-//		RadioGroup rg;
-//		RadioButton rb;
-		for (int i = 0; i < 5; i++) {
-			switch (i) {
-			case 0:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_one);
-				break;
-			case 1:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_two);
-				break;
-			case 2:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_three);
-				break;
-			case 3:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_four);
-				break;
-			case 4:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_five);
-				break;
-			default:
-				fl_page_item = (FrameLayout)findViewById(R.id.topstory_page_one);
-			}
-			Log.v("MainActivity", topstories_group.size()+"");
-			// 获取图片uri
-			uri = (Uri)topstories_group.get(i).get("imguri");
-			drawble = Drawable.createFromPath(uri.getPath());
-			fl_page_item.setBackgroundDrawable(drawble);
-			img = (ImageView)fl_page_item.getChildAt(0);
-			img.setImageDrawable(drawble);
-			tv = (TextView)fl_page_item.getChildAt(1);
-			tv.setText(topstories_group.get(i).get("title").toString());
-		}
-		
-	}
-
-	// 手势监听器
-	public class MainGestureDetectorListener implements OnGestureListener{
-		
-		@Override
-		public boolean onDown(MotionEvent arg0) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
-				float arg3) {
-			// TODO Auto-generated method stub
-			// 向前翻页
-			if(arg0.getX()-arg1.getX()>60){
-//				vf_hotstories_show.showNext();
-				showNextPage();
-				return true;
-			}
-			// 向后翻页
-			else if(arg1.getX()-arg0.getX()>60){
-//				vf_hotstories_show.showPrevious();
-				showPrevPage();
-				return true;
-			}
-			else {
-				return false;
-			}
-			
-		}
-
-		@Override
-		public void onLongPress(MotionEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
-				float arg3) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void onShowPress(MotionEvent arg0) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public boolean onSingleTapUp(MotionEvent arg0) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		// 向前翻页
-		public void showPrevPage(){
-			if(vf_hotstories_show.getChildCount() <= 1){
-				return;
-			}
-			int in = R.anim.push_left_in;
-			int out = R.anim.push_right_out;
-			vf_hotstories_show.setInAnimation(MainActivity.this, in);
-			vf_hotstories_show.setOutAnimation(MainActivity.this, out);
-			vf_hotstories_show.showPrevious();
-			
-		}
-		
-		// 向后翻页
-		public void showNextPage(){
-			if(vf_hotstories_show.getChildCount() <= 1){
-				return;
-			}
-			int in = R.anim.push_right_in;
-			int out = R.anim.push_left_out;
-			vf_hotstories_show.setInAnimation(MainActivity.this, in);
-			vf_hotstories_show.setOutAnimation(MainActivity.this, out);
-			vf_hotstories_show.showNext();
-		}
-		
-	}
-	
 }

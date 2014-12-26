@@ -14,6 +14,7 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    tools:context=".MainActivity">
+<<<<<<< HEAD
 			    <ViewFlipper
 			        android:id="@+id/vf_show_hotstories"
 			        android:layout_width="fill_parent"
@@ -38,11 +39,18 @@
 			            layout="@layout/vf_show_item" /> 
 			    </ViewFlipper>
 			
+=======
+			    <com.directionalviewpager.DirectionalViewPager
+				    android:id="@+id/hotstoriespagers"
+				    android:layout_height="fill_parent"
+				    android:layout_width="fill_parent"
+				    android:orientation="vertical" />
+>>>>>>> develop
 			    <com.example.zhihupocket.ListViewForScrollViewInMainXML 
 			        android:id="@+id/lv_showshortcontent"
 			        android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
-			        android:layout_below="@id/vf_show_hotstories"
+			        android:layout_below="@id/hotstoriespagers"
 			        android:layout_marginTop="@dimen/activity_vertical_margin"
 				    android:layout_marginLeft="@dimen/activity_horizontal_margin"
 				    android:layout_marginRight="@dimen/activity_horizontal_margin"
