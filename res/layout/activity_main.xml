@@ -9,43 +9,17 @@
 		    android:id="@+id/main_sv"
 		    android:layout_width="fill_parent"
 		    android:layout_height="fill_parent">
-		    <RelativeLayout
+		   	<RelativeLayout
 			  	android:id="@+id/main_rl"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    tools:context=".MainActivity">
-<<<<<<< HEAD
-			    <ViewFlipper
-			        android:id="@+id/vf_show_hotstories"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:autoStart="true"
-			        android:flipInterval="4000"
-			        android:visibility="invisible">
-			        <include
-			            android:id="@+id/topstory_page_two"
-			            layout="@layout/vf_show_item"/>
-			        <include
-			            android:id="@+id/topstory_page_three"
-			            layout="@layout/vf_show_item"/>
-			        <include
-			            android:id="@+id/topstory_page_four"
-			            layout="@layout/vf_show_item"/>
-			        <include
-			            android:id="@+id/topstory_page_five"
-			            layout="@layout/vf_show_item"/>
-			        <include
-			            android:id="@+id/topstory_page_one"
-			            layout="@layout/vf_show_item" /> 
-			    </ViewFlipper>
-			
-=======
+	
 			    <com.directionalviewpager.DirectionalViewPager
 				    android:id="@+id/hotstoriespagers"
 				    android:layout_height="fill_parent"
 				    android:layout_width="fill_parent"
 				    android:orientation="vertical" />
->>>>>>> develop
 			    <com.example.zhihupocket.ListViewForScrollViewInMainXML 
 			        android:id="@+id/lv_showshortcontent"
 			        android:layout_width="fill_parent"
