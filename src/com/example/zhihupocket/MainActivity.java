@@ -3,6 +3,7 @@ package com.example.zhihupocket;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,7 +50,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-
+/*
+ * PagedHeadListView可以用这个开源项目做
+ */
 public class MainActivity extends Activity {
 
 	private static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
@@ -100,6 +103,8 @@ public class MainActivity extends Activity {
 			}
 		});
 		main_swiperefresh.setRefreshing(true);
+		// 防止刷新时又被刷新
+		main_swiperefresh.setEnabled(false);
 		Thread getandparseData = new Thread(new getAndParseJsonData());
 		getandparseData.start();
 	}
@@ -176,6 +181,7 @@ public class MainActivity extends Activity {
 						Toast.makeText(getApplicationContext(), "没有成功从网络处获得数据", Toast.LENGTH_SHORT).show();
 //						main_processdialog.cancel();
 						main_swiperefresh.setRefreshing(false);
+						main_swiperefresh.setEnabled(true);
 					}
 				});
 			}
@@ -229,6 +235,7 @@ public class MainActivity extends Activity {
 									}
 								});
 							    main_swiperefresh.setRefreshing(false);
+							    main_swiperefresh.setEnabled(true);;
 								clearImgCache();
 							}
 						});
