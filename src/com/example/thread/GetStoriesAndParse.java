@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class GetStoriesAndParse implements Runnable{
 		}	
 		@Override
 		public void run(){
+			Log.v("GetStoriesAndParse", "run!");
 			json_data = HttpRequestData.getJsonContent();
 			if(json_data.equals("-1")){
 				//显示没有成功从网络处获取到数据
@@ -55,13 +57,14 @@ public class GetStoriesAndParse implements Runnable{
 			}
 			else {
 				//解析json数据，将图片之类的都解析出来
-				
+				Log.v("GetStoriesAndParse", "parsestories!");
 				stories_group = (new ParseJsonStories(json_data)).getStories();
 				topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
 				main_thread_handler.post(new Runnable() {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+							Log.v("GetStoriesAndParse", "runview");
 							main.runView(stories_group, topstories_group);
 						}
 				});

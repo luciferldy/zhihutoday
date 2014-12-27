@@ -1,32 +1,18 @@
 package com.example.zhihupocket;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.directionalviewpager.DirectionalViewPager;
 import com.example.adapter.HotStoriesPagersAdapter;
 import com.example.adapter.StoriesAdapter;
+import com.example.task.HandleStringAndImage;
 import com.example.thread.GetStoriesAndParse;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -37,10 +23,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
@@ -58,6 +41,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.v("MainActivity", "nonono!");
 		setContentView(R.layout.activity_main);	
 		initView();
 		//创建缓存目录，程序一启动就创建
@@ -85,13 +69,14 @@ public class MainActivity extends FragmentActivity {
 				main_swiperefresh.setRefreshing(true);
 				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
 				getandparseData.start();
-				Log.d("MainActivity.initView", "开始刷新");
+				Log.v("MainActivity.initView", "开始刷新");
 				
 			}
 		});
 		main_swiperefresh.setRefreshing(true);
 		// 防止刷新时又被刷新
 		main_swiperefresh.setEnabled(false);
+		Log.v("MainActivity", "第一遍刷新?");
 		Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
 		getandparseData.start();
 	}
@@ -102,7 +87,7 @@ public class MainActivity extends FragmentActivity {
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		StoriesAdapter loadlistadapter = new StoriesAdapter(getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);
-		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager()));
+		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager(), topstories_group));
 		hotstoriespagers.setVisibility(View.VISIBLE);
 		// 添加点击监听器
 		hotstoriespagers.setOnClickListener(new View.OnClickListener() {
@@ -123,32 +108,7 @@ public class MainActivity extends FragmentActivity {
 		});
 	    main_swiperefresh.setRefreshing(false);
 	    main_swiperefresh.setEnabled(true);;
-		clearImgCache(stories_group, topstories_group);
-	}
-	
-	// 清除没有图片的缓存
-	protected void clearImgCache(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
-		File[] files = pic_cache.listFiles();
-		int flag=0;
-		String img_uri;
-		ArrayList<String> imgs = new ArrayList<String>();
-		
-		for(int i=0;i<stories_group.size();i++){
-			if(stories_group.get(i).containsKey("imguri")){
-				img_uri = stories_group.get(i).get("imguri").toString();
-				imgs.add(getPicNameOfUrl(img_uri));
-			}
-		}
-		
-		for(File file: files){
-			flag=0;
-			if (imgs.contains(file.getName())) {
-				flag=1;
-			}
-			if(flag==0){
-				file.delete();
-			}
-		}
+		HandleStringAndImage.clearImgCache(stories_group, topstories_group, pic_cache);
 	}
 	
 	// 获得图片的名称
