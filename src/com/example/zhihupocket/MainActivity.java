@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,7 +34,6 @@ public class MainActivity extends FragmentActivity {
 	private ListView lv_showshortcontent;
 	public static File pic_cache;
 	private ViewPager hotstoriespagers;
-	private ProgressDialog main_processdialog;
 	private SwipeRefreshLayout main_swiperefresh;
 	
 	@Override

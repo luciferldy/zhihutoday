@@ -25,6 +25,8 @@ public class StoryItemClickListener implements OnItemClickListener{
 		// TODO Auto-generated method stub
 		// 将stories和顺序传递过去
 		Intent intent = new Intent(context, StoryContent.class);
+		// 非activity中必用的
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra("stories_group", stories_group);
 		intent.putExtra("story_order", arg2);
 		context.startActivity(intent);
