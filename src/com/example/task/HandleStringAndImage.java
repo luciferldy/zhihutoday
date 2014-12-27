@@ -62,7 +62,7 @@ public class HandleStringAndImage {
 	}
 	
 	// 清除没有图片的缓存
-	public static void clearImgCache(ArrayList<HashMap<String, Object>> stories_group, ArrayList<HashMap<String, Object>> topstories_group, 
+	public static void clearImgCache(ArrayList<HashMap<String, Object>> stories_group, 
 			File pic_cache){
 		File[] files = pic_cache.listFiles();
 		int flag=0;

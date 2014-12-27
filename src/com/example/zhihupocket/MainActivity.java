@@ -4,12 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.directionalviewpager.DirectionalViewPager;
-import com.example.adapter.HotStoriesPagersAdapter;
-import com.example.adapter.StoriesAdapter;
-import com.example.task.HandleStringAndImage;
-import com.example.thread.GetStoriesAndParse;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,6 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+
+import com.example.adapter.HotStoriesPagersAdapter;
+import com.example.adapter.StoriesAdapter;
+import com.example.listener.StoryItemClickListener;
+import com.example.thread.GetStoriesAndParse;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
@@ -34,7 +34,7 @@ public class MainActivity extends FragmentActivity {
 	private Handler main_thread_handler = new Handler();
 	private ListView lv_showshortcontent;
 	public static File pic_cache;
-	private DirectionalViewPager hotstoriespagers;
+	private ViewPager hotstoriespagers;
 	private ProgressDialog main_processdialog;
 	private SwipeRefreshLayout main_swiperefresh;
 	
@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity {
 	@SuppressWarnings("deprecation")
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
-		hotstoriespagers = (DirectionalViewPager)findViewById(R.id.hotstoriespagers);
+		hotstoriespagers = (ViewPager)findViewById(R.id.hotstoriespagers);
 		main_swiperefresh = (SwipeRefreshLayout)findViewById(R.id.main_swipetorefresh);
 		main_swiperefresh.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
@@ -87,6 +87,7 @@ public class MainActivity extends FragmentActivity {
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		StoriesAdapter loadlistadapter = new StoriesAdapter(getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);
+		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(getApplicationContext(), stories_group));
 		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager(), topstories_group));
 		hotstoriespagers.setVisibility(View.VISIBLE);
 		// 添加点击监听器
@@ -97,6 +98,7 @@ public class MainActivity extends FragmentActivity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				// getDisplayedChild方法获取的是前一个的
+				Log.v("MainActivity", "viewpagerclick!");
 				int i = hotstoriespagers.getCurrentItem()+1;
 				i = i<5?i:i-5;
 				Intent intent = new Intent(MainActivity.this, StoryContent.class);
@@ -107,8 +109,7 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 	    main_swiperefresh.setRefreshing(false);
-	    main_swiperefresh.setEnabled(true);;
-		HandleStringAndImage.clearImgCache(stories_group, topstories_group, pic_cache);
+	    main_swiperefresh.setEnabled(true);
 	}
 	
 	// 获得图片的名称

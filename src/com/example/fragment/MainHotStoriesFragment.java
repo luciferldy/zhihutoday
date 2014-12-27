@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.example.zhihupocket.R;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,14 +47,15 @@ public class MainHotStoriesFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-		FrameLayout fl = (FrameLayout)getResources().getLayout(R.id.rl_contain_topstories);
+		FrameLayout fl = (FrameLayout)inflater.inflate(R.layout.vf_show_item, null);
 		ImageView pic = (ImageView)fl.getChildAt(0);
 		TextView txt = (TextView)fl.getChildAt(1);
-		if (top_stories.get(position).containsKey("imguri")) {
-			pic.setImageURI((Uri)top_stories.get(position).get("imguri"));
-		}
+		
+		Uri uri = (Uri)top_stories.get(position).get("imguri");
+		System.out.println(uri.getPath());
+		Drawable drawble = Drawable.createFromPath(uri.getPath());
+		
+		pic.setImageDrawable(drawble);
 		txt.setText(top_stories.get(position).get("title").toString());
 		return fl;
 	}
