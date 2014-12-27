@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -18,11 +19,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ScrollView;
 
 import com.example.adapter.HotStoriesPagersAdapter;
 import com.example.adapter.StoriesAdapter;
 import com.example.listener.StoryItemClickListener;
 import com.example.thread.GetStoriesAndParse;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
@@ -34,7 +39,8 @@ public class MainActivity extends FragmentActivity {
 	private ListView lv_showshortcontent;
 	public static File pic_cache;
 	private ViewPager hotstoriespagers;
-	private SwipeRefreshLayout main_swiperefresh;
+	private PullToRefreshScrollView main_swiperefresh;
+	private ScrollView main_sv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,29 +61,18 @@ public class MainActivity extends FragmentActivity {
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		hotstoriespagers = (ViewPager)findViewById(R.id.hotstoriespagers);
-		main_swiperefresh = (SwipeRefreshLayout)findViewById(R.id.main_swipetorefresh);
-		main_swiperefresh.setColorScheme(android.R.color.holo_blue_bright,
-				android.R.color.holo_green_light,
-				android.R.color.holo_orange_light,
-				android.R.color.holo_red_light);
-		main_swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+		
+		main_swiperefresh = (PullToRefreshScrollView)findViewById(R.id.main_sv);
+		main_swiperefresh.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
 			
-			@Override
-			public void onRefresh() {
-				main_swiperefresh.setRefreshing(true);
+			public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				// TODO Auto-generated method stub
 				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
 				getandparseData.start();
-				Log.v("MainActivity.initView", "开始刷新");
-				
 			}
 		});
-		main_swiperefresh.setRefreshing(true);
-		// 防止刷新时又被刷新
-		main_swiperefresh.setEnabled(false);
-		Log.v("MainActivity", "第一遍刷新?");
-		Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
-		getandparseData.start();
 	}
+	
 	
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
@@ -106,8 +101,7 @@ public class MainActivity extends FragmentActivity {
 				startActivity(intent);
 			}
 		});
-	    main_swiperefresh.setRefreshing(false);
-	    main_swiperefresh.setEnabled(true);
+	    main_swiperefresh.onRefreshComplete();
 	}
 	
 	// 获得图片的名称
@@ -126,7 +120,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_exit:
             	finish();
                 return true;
             default:

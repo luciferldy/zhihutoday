@@ -22,17 +22,18 @@ import com.example.task.ParseJsonStories;
 import com.example.zhihupocket.MainActivity;
 import com.example.zhihupocket.R;
 import com.example.zhihupocket.StoryContent;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 public class GetStoriesAndParse implements Runnable{
 		
 		private String json_data;
 		private MainActivity main;
 		private Handler main_thread_handler;
-		private SwipeRefreshLayout main_swiperefresh;
+		private PullToRefreshScrollView main_swiperefresh;
 		private ArrayList<HashMap<String, Object>> stories_group;
 		private ArrayList<HashMap<String, Object>> topstories_group;
 		
-		public GetStoriesAndParse(MainActivity main, Handler main_thread_handler, SwipeRefreshLayout main_swiperefresh){
+		public GetStoriesAndParse(MainActivity main, Handler main_thread_handler, PullToRefreshScrollView main_swiperefresh){
 			this.main = main;
 			this.main_thread_handler = main_thread_handler;
 			this.main_swiperefresh = main_swiperefresh;
@@ -49,9 +50,7 @@ public class GetStoriesAndParse implements Runnable{
 					public void run() {
 						// TODO Auto-generated method stub
 						Toast.makeText(main, "没有成功从网络处获得数据", Toast.LENGTH_SHORT).show();
-//						main_processdialog.cancel();
-						main_swiperefresh.setRefreshing(false);
-						main_swiperefresh.setEnabled(true);
+						main_swiperefresh.onRefreshComplete();
 					}
 				});
 			}
