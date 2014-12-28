@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -22,7 +21,7 @@ import android.widget.ScrollView;
 import com.example.adapter.HotStoriesPagersAdapter;
 import com.example.adapter.StoriesAdapter;
 import com.example.listener.StoryItemClickListener;
-import com.example.thread.GetStoriesAndParse;
+import com.example.task.GetStoriesAndParseTask;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
@@ -33,11 +32,11 @@ public class MainActivity extends FragmentActivity {
 
 	public static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
 	public static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
-	private Handler main_thread_handler = new Handler();
 	private ListView lv_showshortcontent;
 	public static File pic_cache;
 	private ViewPager hotstoriespagers;
 	private PullToRefreshScrollView main_swiperefresh;
+	@SuppressWarnings("unused")
 	private ScrollView main_sv;
 	
 	@Override
@@ -55,7 +54,6 @@ public class MainActivity extends FragmentActivity {
 
 	//初始化视图
 	@SuppressLint("InlinedApi")
-	@SuppressWarnings("deprecation")
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		hotstoriespagers = (ViewPager)findViewById(R.id.hotstoriespagers);
@@ -65,8 +63,9 @@ public class MainActivity extends FragmentActivity {
 			
 			public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				// TODO Auto-generated method stub
-				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
-				getandparseData.start();
+//				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
+//				getandparseData.start();
+				new GetStoriesAndParseTask(MainActivity.this, main_swiperefresh).execute();
 			}
 		});
 	}
