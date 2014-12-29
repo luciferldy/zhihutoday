@@ -45,7 +45,7 @@ public class ParseJsonStories {
 //						System.out.println(str);
 					
 					story_item.put("images", str);
-					story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));
+//					story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));
 				}
 				stories_group.add(story_item);
 			}
