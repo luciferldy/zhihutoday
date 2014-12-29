@@ -17,6 +17,7 @@ public class HotStoriesPagersAdapter extends FragmentPagerAdapter {
 	public HotStoriesPagersAdapter(FragmentManager fm, ArrayList<HashMap<String, Object>> top_stories) {
 		super(fm);
 		this.top_stories = top_stories;
+		MainHotStoriesFragment.initDisplayImageOptions();
 	}
 
 	@Override

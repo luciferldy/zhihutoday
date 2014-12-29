@@ -41,7 +41,7 @@ public class ParseJsonHotStories {
 				
 				story_item.put("image", str);
 				// 同时异步获取图片的uri
-				story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));
+//				story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));
 				topstories_group.add(story_item);
 			}
 		} catch (Exception e) {

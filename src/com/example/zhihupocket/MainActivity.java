@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
@@ -25,6 +26,11 @@ import com.example.task.GetStoriesAndParseTask;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
@@ -45,14 +51,10 @@ public class MainActivity extends FragmentActivity {
 		Log.v("MainActivity", "nonono!");
 		setContentView(R.layout.activity_main);	
 		initView();
-		//创建缓存目录，程序一启动就创建
-		pic_cache = new File(Environment.getExternalStorageDirectory(), "cache");
-		if(!pic_cache.exists()){
-				pic_cache.mkdir();
-		}
+		initImageLoaderConfigurations();
 	}
 
-	//初始化视图
+	// 初始化视图
 	@SuppressLint("InlinedApi")
 	public void initView(){
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
@@ -70,13 +72,43 @@ public class MainActivity extends FragmentActivity {
 		});
 	}
 	
+	public boolean initImageLoaderConfigurations(){
+		try {
+			//创建缓存目录，程序一启动就创建
+			pic_cache = new File(Environment.getExternalStorageDirectory(), "zhihupocketcache");
+			if(!pic_cache.exists()){
+					pic_cache.mkdir();
+			}
+			@SuppressWarnings("deprecation")
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+			.threadPriority(Thread.NORM_PRIORITY - 2)
+			.denyCacheImageMultipleSizesInMemory()
+			.discCache(new UnlimitedDiscCache(pic_cache))
+			.diskCacheSize(50 * 1024 * 1024) // 50 Mb
+			.tasksProcessingOrder(QueueProcessingType.LIFO)
+			.writeDebugLogs() // Remove for release app
+			.build();
+			// Initialize ImageLoader with configuration.
+			ImageLoader.getInstance().init(config);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
+	// 加载视图
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
 		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
 		StoriesAdapter loadlistadapter = new StoriesAdapter(getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);
+		
+		// 设置当互动到当前的listitem时才去加载图片
+//		lv_showshortcontent.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
+		
 		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(getApplicationContext(), stories_group));
 		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager(), topstories_group));
 		hotstoriespagers.setVisibility(View.VISIBLE);
@@ -100,12 +132,7 @@ public class MainActivity extends FragmentActivity {
 		});
 	    main_swiperefresh.onRefreshComplete();
 	}
-	
-	// 获得图片的名称
-	public String getPicNameOfUrl(String name){
-		String[] item_group = name.split("/");
-		return item_group[item_group.length-1];
-	}
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
