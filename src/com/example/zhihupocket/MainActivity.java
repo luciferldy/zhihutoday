@@ -2,26 +2,22 @@ package com.example.zhihupocket;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
+import news.LoadingPreNew;
+import news.LoadingTodayNews;
+import android.R.integer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
-import com.example.adapter.HotStoriesPagersAdapter;
-import com.example.adapter.StoriesAdapter;
-import com.example.listener.StoryItemClickListener;
 import com.example.task.GetStoriesAndParseTask;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -30,52 +26,68 @@ import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 /*
  * PagedHeadListView可以用这个开源项目做
  */
 public class MainActivity extends FragmentActivity {
 
-	public static final String ZHIHU_API = "http://news-at.zhihu.com/api/3/news/latest";
+	public static final String ZHIHU_API_TODAY = "http://news-at.zhihu.com/api/3/news/latest";
 	public static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
-	private ListView lv_showshortcontent;
-	public static File pic_cache;
-	private ViewPager hotstoriespagers;
-	private PullToRefreshScrollView main_swiperefresh;
-	@SuppressWarnings("unused")
-	private ScrollView main_sv;
+	public static final String ZHIHU_API_BEFORE = "http://news.at.zhihu.com/api/3/news/before/";
+	public static ArrayList<String> end_date = new ArrayList<String>();
+	public static String current_date;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.v("MainActivity", "nonono!");
-		setContentView(R.layout.activity_main);	
-		initView();
+		setContentView(R.layout.activity_main);
 		initImageLoaderConfigurations();
-	}
-
-	// 初始化视图
-	@SuppressLint("InlinedApi")
-	public void initView(){
-		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
-		hotstoriespagers = (ViewPager)findViewById(R.id.hotstoriespagers);
-		
-		main_swiperefresh = (PullToRefreshScrollView)findViewById(R.id.main_sv);
-		main_swiperefresh.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
-			
-			public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
-				// TODO Auto-generated method stub
-//				Thread getandparseData = new Thread(new GetStoriesAndParse(MainActivity.this, main_thread_handler, main_swiperefresh));
-//				getandparseData.start();
-				new GetStoriesAndParseTask(MainActivity.this, main_swiperefresh).execute();
-			}
-		});
+		initPullToRefresh();
+		initCalendar();
 	}
 	
+	public void initCalendar(){
+		final Calendar c = Calendar.getInstance();  
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        String myear = String.valueOf(c.get(Calendar.YEAR));
+        String mMonth = String.valueOf(c.get(Calendar.MONTH) + 1);// 获取当前月份  
+        String mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码  
+        String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
+        System.out.println(myear+mMonth+mDay+mWay);
+	}
+	
+	// 初始化下拉菜单
+	public void initPullToRefresh(){
+		final PullToRefreshScrollView main_swiperefresh = (PullToRefreshScrollView)findViewById(R.id.main_sv);
+		
+		OnRefreshListener<ScrollView> swiperefresh_listener = new OnRefreshListener<ScrollView>() {
+
+			@Override
+			public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				// TODO Auto-generated method stub
+				// 下拉刷新
+				if (PullToRefreshBase.Mode.PULL_FROM_START == main_swiperefresh.getCurrentMode()) {
+					new GetStoriesAndParseTask(MainActivity.this, new LoadingTodayNews(MainActivity.this, main_swiperefresh), main_swiperefresh, "today").execute();
+				}
+				// 下拉加载
+				else if (PullToRefreshBase.Mode.PULL_FROM_END == main_swiperefresh.getCurrentMode()) {
+					new GetStoriesAndParseTask(MainActivity.this, new LoadingPreNew(MainActivity.this, main_swiperefresh), main_swiperefresh, "before").execute();
+				}
+				else {
+					Toast.makeText(getApplicationContext(), "出错了……", Toast.LENGTH_SHORT).show();
+				}
+			}
+		};
+		main_swiperefresh.setOnRefreshListener(swiperefresh_listener);
+		
+	}
+	
+	// 初始化图片加载配置
 	public boolean initImageLoaderConfigurations(){
 		try {
 			//创建缓存目录，程序一启动就创建
-			pic_cache = new File(Environment.getExternalStorageDirectory(), "zhihupocketcache");
+			File pic_cache = new File(Environment.getExternalStorageDirectory(), "zhihupocketcache");
 			if(!pic_cache.exists()){
 					pic_cache.mkdir();
 			}
@@ -97,42 +109,6 @@ public class MainActivity extends FragmentActivity {
 			return false;
 		}
 	}
-	
-	// 加载视图
-	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
-		// TODO Auto-generated method stub
-		//在ui线程中设置listview
-		lv_showshortcontent = (ListView)findViewById(R.id.lv_showshortcontent);
-		StoriesAdapter loadlistadapter = new StoriesAdapter(getApplicationContext(), stories_group);
-		lv_showshortcontent.setAdapter(loadlistadapter);
-		
-		// 设置当互动到当前的listitem时才去加载图片
-//		lv_showshortcontent.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true, this));
-		
-		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(getApplicationContext(), stories_group));
-		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(getSupportFragmentManager(), topstories_group));
-		hotstoriespagers.setVisibility(View.VISIBLE);
-		// 添加点击监听器
-		hotstoriespagers.setOnClickListener(new View.OnClickListener() {
-			
-			@SuppressLint("NewApi")
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				// getDisplayedChild方法获取的是前一个的
-				Log.v("MainActivity", "viewpagerclick!");
-				int i = hotstoriespagers.getCurrentItem()+1;
-				i = i<5?i:i-5;
-				Intent intent = new Intent(MainActivity.this, StoryContent.class);
-				intent.putExtra("stories_group", topstories_group);
-				// 万万没想到，标记的时候这个是反着来的
-				intent.putExtra("story_order", i);
-				startActivity(intent);
-			}
-		});
-	    main_swiperefresh.onRefreshComplete();
-	}
-
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

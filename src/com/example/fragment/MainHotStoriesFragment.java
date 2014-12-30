@@ -56,6 +56,7 @@ public class MainHotStoriesFragment extends Fragment implements OnClickListener{
 			.showImageForEmptyUri(R.drawable.ic_empty)
 			.showImageOnFail(R.drawable.ic_error)
 			.resetViewBeforeLoading(true)
+			.cacheInMemory(false)
 			.cacheOnDisk(true)
 			.imageScaleType(ImageScaleType.EXACTLY)
 			.bitmapConfig(Bitmap.Config.RGB_565)
