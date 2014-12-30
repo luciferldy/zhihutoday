@@ -52,7 +52,7 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
-		tv_todaynews.setText(formatDate(MainActivity.end_date.get(MainActivity.end_date.size()-1)));
+		tv_todaynews.setText(formatDate(MainActivity.end_date.get(0)));
 		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);

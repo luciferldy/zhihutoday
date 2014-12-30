@@ -43,7 +43,18 @@ public class GetStoriesAndParseTask extends AsyncTask<Void, Integer, Boolean>{
 		else {
 			stories_group = (new ParseJsonStories(json_data)).getStories();
 			topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
-			return true;
+			if(query_type.equals("today")){
+				if (stories_group!=null&&topstories_group!=null) {
+					return true;
+				}
+				return false;
+			}
+			else {
+				if (stories_group!=null) {
+					return true;
+				}
+				return false;
+			}
 		}
 	}
 	
