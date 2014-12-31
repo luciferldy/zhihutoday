@@ -29,6 +29,7 @@ public class ParseJsonHotStories {
 			for(int i=0;i<json_topstories.length();i++){
 				story_item = new HashMap<String, Object>();
 				story_item.put("title", json_topstories.getJSONObject(i).getString("title"));
+				story_item.put("type", json_topstories.getJSONObject(i).getString("type"));
 				// 最近知乎改了接口，原来的接口不能用了
 				if(json_topstories.getJSONObject(i).has("share_url")){
 					story_item.put("share_url", json_topstories.getJSONObject(i).getString("share_url"));
@@ -38,7 +39,6 @@ public class ParseJsonHotStories {
 				}
 				String str = json_topstories.getJSONObject(i).getString("image");
 				str = HandleStringAndImage.getHandledURL(str);
-				
 				story_item.put("image", str);
 				// 同时异步获取图片的uri
 //				story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));

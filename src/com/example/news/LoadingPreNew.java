@@ -46,6 +46,9 @@ public class LoadingPreNew implements LoadingBaseNews{
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
 		lv_header.setText(formatDate(MainActivity.end_date.get(MainActivity.end_date.size()-1)));
+		// 将将数据存入数据库 
+		
+		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);
 		// 设置当互动到当前的listitem时才去加载图片

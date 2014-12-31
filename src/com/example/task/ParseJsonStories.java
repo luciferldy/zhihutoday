@@ -39,6 +39,8 @@ public class ParseJsonStories {
 				
 				story_item = new HashMap<String, Object>();
 				story_item.put("title", json_stories.getJSONObject(i).getString("title"));
+				story_item.put("id", json_stories.getJSONObject(i).getString("id"));
+				story_item.put("type", json_stories.getJSONObject(i).getString("type"));
 				if (json_stories.getJSONObject(i).has("share_url")) {
 					story_item.put("share_url", json_stories.getJSONObject(i).getString("share_url"));
 				}
@@ -49,11 +51,12 @@ public class ParseJsonStories {
 				// 判断数组中是否存在images这个项目
 				if(json_stories.getJSONObject(i).has("images")){
 					String str = json_stories.getJSONObject(i).getString("images");
-					str = HandleStringAndImage.getHandledURL(str);
-//					System.out.println(str);
-					
+					str = HandleStringAndImage.getHandledURL(str);					
 					story_item.put("images", str);
 //					story_item.put("imguri", HandleStringAndImage.downloadPic(str, MainActivity.pic_cache));
+				}
+				else {
+					story_item.put("images", "none");
 				}
 				stories_group.add(story_item);
 			}

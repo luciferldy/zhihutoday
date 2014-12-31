@@ -85,12 +85,8 @@ public class StoriesAdapter extends BaseAdapter{
 			else{
 				picandtext = (PicAndTextViewGroup)convertView.getTag();
 			}
-			
-			// 有图片的话显示图片
-//			if (stories_group.get(position).containsKey("imguri")) {
-//				picandtext.iv_story_img.setImageURI((Uri)stories_group.get(position).get("imguri"));
-//			}
-			if (stories_group.get(position).containsKey("images")) {
+			String images = stories_group.get(position).get("images").toString();
+			if (!images.equals("none")) {
 				ImageLoader.getInstance().displayImage(stories_group.get(position).get("images").toString()
 						, picandtext.iv_story_img, options, animateFirstListener);
 			}
