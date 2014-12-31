@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import news.LoadingPreNew;
-import news.LoadingTodayNews;
 import android.R.integer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.news.LoadingPreNew;
+import com.example.news.LoadingTodayNews;
 import com.example.task.GetStoriesAndParseTask;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;

@@ -3,8 +3,7 @@ package com.example.task;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import news.LoadingBaseNews;
-
+import com.example.news.LoadingBaseNews;
 import com.example.zhihupocket.MainActivity;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 

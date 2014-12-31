@@ -1,4 +1,4 @@
-package news;
+package com.example.news;
 
 import java.util.ArrayList;
 import java.util.HashMap;
