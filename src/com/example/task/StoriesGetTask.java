@@ -10,7 +10,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class GetStoriesAndParseTask extends AsyncTask<Void, Integer, Boolean>{
+public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	private String json_data;
 	private ArrayList<HashMap<String, Object>> stories_group = new ArrayList<HashMap<String,Object>>();
 	private ArrayList<HashMap<String, Object>> topstories_group = new ArrayList<HashMap<String,Object>>();
@@ -19,7 +19,7 @@ public class GetStoriesAndParseTask extends AsyncTask<Void, Integer, Boolean>{
 	private PullToRefreshScrollView main_swiperefresh;
 	private String query_type;
 	
-	public GetStoriesAndParseTask(MainActivity main, LoadingBaseNews loadingnews, 
+	public StoriesGetTask(MainActivity main, LoadingBaseNews loadingnews, 
 			PullToRefreshScrollView main_swiperefresh, String query_type) {
 		// TODO Auto-generated constructor stub
 		this.loadingnews = loadingnews;

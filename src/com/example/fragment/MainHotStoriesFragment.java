@@ -2,7 +2,6 @@ package com.example.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import com.example.zhihupocket.R;
 import com.example.zhihupocket.StoryContent;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -11,11 +10,9 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -77,6 +74,7 @@ public class MainHotStoriesFragment extends Fragment implements OnClickListener{
 		position = getArguments().getInt(ARG_POSITION);
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -84,11 +82,6 @@ public class MainHotStoriesFragment extends Fragment implements OnClickListener{
 		fl.setOnClickListener(this);
 		ImageView pic = (ImageView)fl.getChildAt(0);
 		TextView txt = (TextView)fl.getChildAt(1);
-		
-//		Uri uri = (Uri)top_stories.get(position).get("imguri");
-//		Drawable drawble = Drawable.createFromPath(uri.getPath());
-//		
-//		pic.setImageDrawable(drawble);
 		txt.setText(top_stories.get(position).get("title").toString());
 		final ProgressBar spinner = (ProgressBar) fl.getChildAt(2);
 

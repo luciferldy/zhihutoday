@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.example.adapter.HotStoriesPagersAdapter;
 import com.example.adapter.StoriesAdapter;
 import com.example.listener.StoryItemClickListener;
-import com.example.task.GetStoriesAndParseTask;
 import com.example.zhihupocket.MainActivity;
 import com.example.zhihupocket.R;
 import com.example.zhihupocket.StoryContent;

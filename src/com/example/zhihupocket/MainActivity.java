@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import android.R.integer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.news.LoadingPreNew;
 import com.example.news.LoadingTodayNews;
-import com.example.task.GetStoriesAndParseTask;
+import com.example.task.StoriesGetTask;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
@@ -68,11 +67,11 @@ public class MainActivity extends FragmentActivity {
 				// TODO Auto-generated method stub
 				// 下拉刷新
 				if (PullToRefreshBase.Mode.PULL_FROM_START == main_swiperefresh.getCurrentMode()) {
-					new GetStoriesAndParseTask(MainActivity.this, new LoadingTodayNews(MainActivity.this, main_swiperefresh), main_swiperefresh, "today").execute();
+					new StoriesGetTask(MainActivity.this, new LoadingTodayNews(MainActivity.this, main_swiperefresh), main_swiperefresh, "today").execute();
 				}
 				// 下拉加载
 				else if (PullToRefreshBase.Mode.PULL_FROM_END == main_swiperefresh.getCurrentMode()) {
-					new GetStoriesAndParseTask(MainActivity.this, new LoadingPreNew(MainActivity.this, main_swiperefresh), main_swiperefresh, "before").execute();
+					new StoriesGetTask(MainActivity.this, new LoadingPreNew(MainActivity.this, main_swiperefresh), main_swiperefresh, "before").execute();
 				}
 				else {
 					Toast.makeText(getApplicationContext(), "出错了……", Toast.LENGTH_SHORT).show();
