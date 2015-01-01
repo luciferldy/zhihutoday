@@ -2,6 +2,7 @@ package com.example.db;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentValues;
@@ -21,9 +22,8 @@ public class TopStoriesHandleSQLite {
 	
 	public TopStoriesHandleSQLite(Context context, Calendar calendar){
 		this.context = context;
-		date = String.valueOf(calendar.get(Calendar.YEAR))+
-		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+// 获取当前月份  
-		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+		Date format = calendar.getTime();
+		date = MainActivity.DATEFORMAT.format(format);
 	}
 	
 	public boolean storedTopStoriesIntoDB(ArrayList<HashMap<String, Object>> topstories_group){

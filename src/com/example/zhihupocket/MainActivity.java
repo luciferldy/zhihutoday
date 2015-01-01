@@ -1,20 +1,20 @@
 package com.example.zhihupocket;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
-
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
 import com.example.news.LoadingPreNew;
 import com.example.news.LoadingTodayNews;
 import com.example.task.StoriesGetTask;
@@ -34,6 +34,8 @@ public class MainActivity extends FragmentActivity {
 	public static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
 	public static final String ZHIHU_API_BEFORE = "http://news.at.zhihu.com/api/3/news/before/";
 	public static Calendar sys_calendar;
+	@SuppressLint("SimpleDateFormat")
+	public static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void initCalendar(){
-		MainActivity.sys_calendar = Calendar.getInstance();  
-        sys_calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+		MainActivity.sys_calendar = Calendar.getInstance();
 	}
 	
 	// 初始化下拉菜单

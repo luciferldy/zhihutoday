@@ -2,17 +2,14 @@ package com.example.task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
-
 import com.example.db.StoriesHandleSQLite;
 import com.example.db.TopStoriesHandleSQLite;
 import com.example.news.LoadingBaseNews;
 import com.example.zhihupocket.MainActivity;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
-import android.R.bool;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -51,18 +48,16 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	
 	// 获得今天的数据
 	public boolean getTodayNews(){
+		// 获得今天的消息
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
 		TopStoriesHandleSQLite top = new TopStoriesHandleSQLite(main, calendar);
 		StoriesHandleSQLite general = new StoriesHandleSQLite(main, calendar);
-		
 		// 先尝试从网络上获取今日的消息
 		if (getTodayNewsFromOnLine()) {
 			
 			// 存入数据库
 			if (top.storedTopStoriesIntoDB(topstories_group)&&general.storedStoriesIntoDB(stories_group)) {
-				// 更改系统时间
-				MainActivity.sys_calendar = calendar;
+				// 在runviews之后进行修改系统时间
 				return true;
 			}
 			return false;
@@ -72,8 +67,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 			topstories_group = (top).getTopStoriesFromDB();
 			stories_group = (general).getStoriesFromDB();
 			if (stories_group != null && topstories_group != null) {
-				// 更改系统时间
-				MainActivity.sys_calendar = calendar;
+				// 在runviews之后进行修改系统时间
 				return true;
 			}
 			return false;
@@ -121,9 +115,8 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	public boolean getPreNewsFromOnLine(Calendar calendar){
 		// 将日历提前一天
 		calendar.add(Calendar.DATE, 1);
-		String date = String.valueOf(calendar.get(Calendar.YEAR))+
-			       String.valueOf(calendar.get(Calendar.MONTH) + 1)+// 获取当前月份  
-			       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+		Date format = calendar.getTime();
+		String date = MainActivity.DATEFORMAT.format(format);
 		json_data = HttpRequestData.getJsonContent(MainActivity.ZHIHU_API_BEFORE+date); 
 		if (json_data.equals("-1")) {
 			return false;

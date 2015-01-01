@@ -49,9 +49,9 @@ public class LoadingPreNew implements LoadingBaseNews{
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
 		Calendar calendar = MainActivity.sys_calendar;
-		String date = String.valueOf(calendar.get(Calendar.YEAR))+
-		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+// 获取当前月份  
-		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+		String date = String.valueOf(calendar.get(Calendar.YEAR))+"年"+
+		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
+		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
 		lv_header.setText(date);
 		// 将将数据存入数据库 
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
@@ -60,7 +60,6 @@ public class LoadingPreNew implements LoadingBaseNews{
 		lv_showshortcontent.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
 		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(main.getApplicationContext(), stories_group));
 	    main_swiperefresh.onRefreshComplete();
-	    
 	    // 将系统的时间延后一天
 	    MainActivity.sys_calendar.add(Calendar.DATE, -1);
 	}

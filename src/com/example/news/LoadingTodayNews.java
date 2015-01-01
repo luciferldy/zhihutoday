@@ -1,6 +1,7 @@
 package com.example.news;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
@@ -59,7 +60,11 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
-		tv_todaynews.setText("");
+		Calendar calendar = MainActivity.sys_calendar;
+		String date = String.valueOf(calendar.get(Calendar.YEAR))+"年"+
+		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
+		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
+		tv_todaynews.setText(date);
 		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);
@@ -87,15 +92,8 @@ public class LoadingTodayNews implements LoadingBaseNews{
 			}
 		});
 	    main_swiperefresh.onRefreshComplete();
-	}
-	
-	public String formatDate(String str){
-		if (str.length()==8) {
-			return str.substring(0, 4)+"年"+str.substring(4, 6)+"月"+str.substring(6, 8)+"日";
-		}
-		else {
-			return str;
-		}
+	    // 更新时间
+	    MainActivity.sys_calendar = Calendar.getInstance();
 	}
 	
 }

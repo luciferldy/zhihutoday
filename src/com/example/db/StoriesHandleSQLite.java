@@ -2,6 +2,7 @@ package com.example.db;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.example.zhihupocket.MainActivity;
@@ -21,10 +22,8 @@ public class StoriesHandleSQLite {
 	
 	public StoriesHandleSQLite(Context context, Calendar calendar){
 		this.context = context;
-		date =  String.valueOf(calendar.get(Calendar.YEAR))+
-        String.valueOf(calendar.get(Calendar.MONTH) + 1)+// 获取当前月份  
-        String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码  
-		
+		Date format = calendar.getTime();
+		date = MainActivity.DATEFORMAT.format(format);
 	}
 	
 	// 将普通故事放入数据库中
