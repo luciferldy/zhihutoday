@@ -1,12 +1,18 @@
 package com.example.task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
+import com.example.db.StoriesHandleSQLite;
+import com.example.db.TopStoriesHandleSQLite;
 import com.example.news.LoadingBaseNews;
 import com.example.zhihupocket.MainActivity;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
+import android.R.bool;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -35,25 +41,100 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	@Override
 	protected Boolean doInBackground(Void... params) {
 		// TODO Auto-generated method stub
-		json_data = HttpRequestData.getJsonContent(query_type); 
+		if (query_type.equals("today")) {
+			return getTodayNews();
+		}
+		else {
+			return getPreNews();
+		}
+	}
+	
+	// 获得今天的数据
+	public boolean getTodayNews(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+		TopStoriesHandleSQLite top = new TopStoriesHandleSQLite(main, calendar);
+		StoriesHandleSQLite general = new StoriesHandleSQLite(main, calendar);
+		
+		// 先尝试从网络上获取今日的消息
+		if (getTodayNewsFromOnLine()) {
+			
+			// 存入数据库
+			if (top.storedTopStoriesIntoDB(topstories_group)&&general.storedStoriesIntoDB(stories_group)) {
+				// 更改系统时间
+				MainActivity.sys_calendar = calendar;
+				return true;
+			}
+			return false;
+		}
+		// 从数据库中查询有没有软件
+		else {
+			topstories_group = (top).getTopStoriesFromDB();
+			stories_group = (general).getStoriesFromDB();
+			if (stories_group != null && topstories_group != null) {
+				// 更改系统时间
+				MainActivity.sys_calendar = calendar;
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	// 获得今天的数据
+	public boolean getPreNews(){
+		Calendar calendar = MainActivity.sys_calendar;
+		StoriesHandleSQLite general = new StoriesHandleSQLite(main, calendar);
+		stories_group = general.getStoriesFromDB();
+		// 先从数据库中取数据
+		if (stories_group!=null) {
+			return true;
+		}
+		else {
+			if (getPreNewsFromOnLine(calendar)) {	
+				// 存入数据库
+				if (general.storedStoriesIntoDB(stories_group)) {
+					return true;
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	// 从网络上刷新今日的消息
+	public boolean getTodayNewsFromOnLine(){
+		json_data = HttpRequestData.getJsonContent(MainActivity.ZHIHU_API_TODAY); 
 		if (json_data.equals("-1")) {
 			return false;
 		}
 		else {
 			stories_group = (new ParseJsonStories(json_data)).getStories();
 			topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
-			if(query_type.equals("today")){
-				if (stories_group!=null&&topstories_group!=null) {
-					return true;
-				}
-				return false;
+			if (stories_group!=null&&topstories_group!=null) {
+				return true;
 			}
-			else {
-				if (stories_group!=null) {
-					return true;
-				}
-				return false;
+			return false;
+		}
+	}
+	
+	// 从网络上获得之前新闻
+	public boolean getPreNewsFromOnLine(Calendar calendar){
+		// 将日历提前一天
+		calendar.add(Calendar.DATE, 1);
+		String date = String.valueOf(calendar.get(Calendar.YEAR))+
+			       String.valueOf(calendar.get(Calendar.MONTH) + 1)+// 获取当前月份  
+			       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+		json_data = HttpRequestData.getJsonContent(MainActivity.ZHIHU_API_BEFORE+date); 
+		if (json_data.equals("-1")) {
+			return false;
+		}
+		else {
+			stories_group = (new ParseJsonStories(json_data)).getStories();
+			topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
+			if (stories_group!=null) {
+				return true;
 			}
+			return false;
 		}
 	}
 	
@@ -61,6 +142,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	protected void onProgressUpdate(Integer... values) {  
 		
 	}
+	
 	@Override  
     protected void onPostExecute(Boolean result) {    
         if (result) {  

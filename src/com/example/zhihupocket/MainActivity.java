@@ -33,8 +33,7 @@ public class MainActivity extends FragmentActivity {
 	public static final String ZHIHU_API_TODAY = "http://news-at.zhihu.com/api/3/news/latest";
 	public static final String ZHIHU_STORY_API = "http://daily.zhihu.com/story/";
 	public static final String ZHIHU_API_BEFORE = "http://news.at.zhihu.com/api/3/news/before/";
-	public static ArrayList<String> end_date = new ArrayList<String>();
-	public static String current_date;
+	public static Calendar sys_calendar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +46,8 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void initCalendar(){
-		final Calendar c = Calendar.getInstance();  
-        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        String myear = String.valueOf(c.get(Calendar.YEAR));
-        String mMonth = String.valueOf(c.get(Calendar.MONTH) + 1);// 获取当前月份  
-        String mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码  
-        String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
-        System.out.println(myear+mMonth+mDay+mWay);
+		MainActivity.sys_calendar = Calendar.getInstance();  
+        sys_calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
 	}
 	
 	// 初始化下拉菜单

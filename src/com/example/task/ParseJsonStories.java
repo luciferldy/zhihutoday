@@ -27,13 +27,6 @@ public class ParseJsonStories {
 //				System.out.println(json_data);
 			JSONObject json_parse_object = new JSONObject(json_data);
 			
-			// 设置日期
-			// 判断是刷新今日还是刷新昨日
-			String date = json_parse_object.getString("date");
-			if (!MainActivity.end_date.contains(date)) {
-				MainActivity.end_date.add(date);
-			}
-			
 			JSONArray json_stories = json_parse_object.getJSONArray("stories");
 			for(int i=0; i<json_stories.length(); i++){
 				

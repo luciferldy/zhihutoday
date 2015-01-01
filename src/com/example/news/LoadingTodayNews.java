@@ -7,9 +7,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.adapter.HotStoriesPagersAdapter;
@@ -18,9 +19,7 @@ import com.example.listener.StoryItemClickListener;
 import com.example.zhihupocket.MainActivity;
 import com.example.zhihupocket.R;
 import com.example.zhihupocket.StoryContent;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
@@ -39,11 +38,20 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		initView();
 	}
 	// 初始化视图
-	@SuppressLint("InlinedApi")
+	@SuppressLint({ "InlinedApi", "InflateParams" })
 	public void initView(){
-		lv_showshortcontent = (ListView)main.findViewById(R.id.lv_todaynews);
-		hotstoriespagers = (ViewPager)main.findViewById(R.id.hotstoriespagers);
-		tv_todaynews = (TextView)main.findViewById(R.id.tv_todaynews);
+		
+		LinearLayout main_ll = (LinearLayout) main.findViewById(R.id.main_rl);
+		// 清除layout里面的视图
+		main_ll.removeAllViewsInLayout();
+		
+		LayoutInflater layoutInflater = LayoutInflater.from(main);
+		LinearLayout ll = (LinearLayout)layoutInflater.inflate(R.layout.main_hotstoriescontent, null);
+		hotstoriespagers = (ViewPager)ll.getChildAt(0);
+		tv_todaynews = (TextView)ll.getChildAt(1);
+		lv_showshortcontent = (ListView)ll.getChildAt(2);
+		main_ll.addView(ll);
+		
 	}
 	
 	// 加载视图
@@ -51,7 +59,7 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
-		tv_todaynews.setText(formatDate(MainActivity.end_date.get(0)));
+		tv_todaynews.setText("");
 		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
 		lv_showshortcontent.setAdapter(loadlistadapter);

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <android.support.v4.view.ViewPager
+	    android:id="@+id/hotstoriespagers"
+	    android:layout_height="200dp"
+	    android:layout_width="fill_parent"
+	    android:orientation="horizontal">
+	</android.support.v4.view.ViewPager>
+	<TextView 
+	    android:id="@+id/tv_todaynews"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8sp"
+		android:layout_marginLeft="10sp"
+		android:layout_marginRight="10sp"
+		android:layout_marginBottom="8sp"
+        android:textSize="22sp"
+        android:text=""/>
+	<com.example.zhihupocket.ListViewForScrollViewInMainXML 
+        android:id="@+id/lv_todaynews"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+	    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+	    android:layout_marginRight="@dimen/activity_horizontal_margin"
+	    android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:divider="#00000000"
+        android:dividerHeight="4dp">
+    </com.example.zhihupocket.ListViewForScrollViewInMainXML>
+</LinearLayout>
