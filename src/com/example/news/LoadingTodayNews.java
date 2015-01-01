@@ -93,7 +93,7 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		});
 	    main_swiperefresh.onRefreshComplete();
 	    // 更新时间
-	    MainActivity.sys_calendar = Calendar.getInstance();
+//	    MainActivity.sys_calendar = Calendar.getInstance();
 	}
 	
 }

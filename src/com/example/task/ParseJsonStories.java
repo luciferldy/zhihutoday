@@ -34,6 +34,7 @@ public class ParseJsonStories {
 				story_item.put("title", json_stories.getJSONObject(i).getString("title"));
 				story_item.put("id", json_stories.getJSONObject(i).getString("id"));
 				story_item.put("type", json_stories.getJSONObject(i).getString("type"));
+				story_item.put("ga_prefix", json_stories.getJSONObject(i).getString("ga_prefix"));
 				if (json_stories.getJSONObject(i).has("share_url")) {
 					story_item.put("share_url", json_stories.getJSONObject(i).getString("share_url"));
 				}
