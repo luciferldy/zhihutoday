@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.Toast;
 
 public class StoriesHandleSQLite {
@@ -39,6 +40,7 @@ public class StoriesHandleSQLite {
 				 values.put("type", stories_group.get(i).get("type").toString());
 				 values.put("title", stories_group.get(i).get("title").toString());
 				 values.put("share_url", stories_group.get(i).get("share_url").toString());
+				 values.put("ga_prefix", stories_group.get(i).get("ga_prefix").toString());
 				 db.insert(MainDBHelper.TABLE_STORIES, "id", values);
 				 values.clear();
 			}
@@ -58,14 +60,15 @@ public class StoriesHandleSQLite {
 			dbhelper = new MainDBHelper(context, MainDBHelper.DATABASE_NAME, null, 1);
 			db = dbhelper.getReadableDatabase();
 			Cursor cursor = db.query(MainDBHelper.TABLE_STORIES, new String[]{"id", "images", "title", "type", "share_url", "ga_prefix"},"date="+date, null, null, null, "ga_prefix", null);
-			if (cursor.getColumnCount()==0) {
+			Log.v("TopStoriesHandleSQLite.getStoriesFromDB", cursor.getColumnCount()+"");
+			if (cursor.getCount()==0) {
 				Toast.makeText(context, "数据库出现错误！", Toast.LENGTH_SHORT).show();
 				return null;
 			}
 			else {
-				ArrayList<HashMap<String, Object>> topstories = new ArrayList<HashMap<String,Object>>();
+				ArrayList<HashMap<String, Object>> stories = new ArrayList<HashMap<String,Object>>();
 				HashMap<String, Object> item;
-				if (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 					item = new HashMap<String, Object>();
 					item.put("id", cursor.getString(cursor.getColumnIndex("id")));
 					item.put("title", cursor.getString(cursor.getColumnIndex("title")));
@@ -73,13 +76,18 @@ public class StoriesHandleSQLite {
 					item.put("type", cursor.getString(cursor.getColumnIndex("type")));
 					item.put("ga_prefix", cursor.getString(cursor.getColumnIndex("ga_prefix")));
 					item.put("share_url", cursor.getString(cursor.getColumnIndex("share_url")));
-					topstories.add(item);
+					stories.add(item);
 				}
-				return topstories;
+				db.close();
+				dbhelper.close();
+				return stories;
 			}
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			db.close();
+			dbhelper.close();
 			return null;
 		}
 	}

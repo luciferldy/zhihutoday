@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.zhihupocket.MainActivity;
@@ -57,28 +58,34 @@ public class TopStoriesHandleSQLite {
 			dbhelper = new MainDBHelper(context, MainDBHelper.DATABASE_NAME, null, 1);
 			db = dbhelper.getReadableDatabase();
 			Cursor cursor = db.query(MainDBHelper.TABLE_TOPSTORIES, new String[]{"id", "image", "title", "type", "share_url", "ga_prefix"},"date="+date, null, null, null, "ga_prefix", null);
-			if (cursor.getColumnCount()==0) {
+			Log.v("TopStoriesHandleSQLite.getStoriesFromDB", cursor.getCount()+"");
+			if (cursor.getCount() == 0) {
 				Toast.makeText(context, "数据库出现错误！", Toast.LENGTH_SHORT).show();
 				return null;
 			}
 			else {
 				ArrayList<HashMap<String, Object>> topstories = new ArrayList<HashMap<String,Object>>();
 				HashMap<String, Object> item;
-				if (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 					item = new HashMap<String, Object>();
 					item.put("id", cursor.getString(cursor.getColumnIndex("id")));
 					item.put("title", cursor.getString(cursor.getColumnIndex("title")));
-					item.put("images", cursor.getString(cursor.getColumnIndex("image")));
+					item.put("image", cursor.getString(cursor.getColumnIndex("image")));
 					item.put("type", cursor.getString(cursor.getColumnIndex("type")));
 					item.put("ga_prefix", cursor.getString(cursor.getColumnIndex("ga_prefix")));
 					item.put("share_url", cursor.getString(cursor.getColumnIndex("share_url")));
 					topstories.add(item);
 				}
+				db.close();
+				dbhelper.close();
 				return topstories;
 			}
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			db.close();
+			dbhelper.close();
 			return null;
 		}
 	}

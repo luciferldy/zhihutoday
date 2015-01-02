@@ -59,7 +59,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 			
 			// 存入数据库
 			if (top.storedTopStoriesIntoDB(topstories_group)&&general.storedStoriesIntoDB(stories_group)) {
-				// 在runviews之后不必进行修改系统时间
+				// 在runviews之后需要进行修改系统时间
 				MainActivity.sys_calendar = Calendar.getInstance();
 				return true;
 			}
@@ -71,7 +71,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 			topstories_group = (top).getTopStoriesFromDB();
 			stories_group = (general).getStoriesFromDB();
 			if (stories_group != null && topstories_group != null) {
-				// 在runviews之后不必进行修改系统时间
+				// 在runviews之后需要进行修改系统时间
 				MainActivity.sys_calendar = Calendar.getInstance();
 				return true;
 			}
@@ -86,6 +86,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 		stories_group = general.getStoriesFromDB();
 		// 先从数据库中取数据
 		if (stories_group!=null) {
+			Log.v("StoriesGetTask", "成功从数据库获得以前的消息+消息数量"+stories_group.size());
 			return true;
 		}
 		else {

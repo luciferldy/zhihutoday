@@ -27,6 +27,7 @@ public class MainDBHelper extends SQLiteOpenHelper{
                 + "id varchar,"
                 + "type varchar,"
                 + "ga_prefix varchar,"
+                + "share_url,"
                 + "title varchar)");
 		db.execSQL("create table if not exists stories_cache("  
                   + "date varchar,"  
@@ -34,6 +35,7 @@ public class MainDBHelper extends SQLiteOpenHelper{
                   + "id varchar,"
                   + "ga_prefix varchar,"
                   + "type varchar,"
+                  + "share_url,"
                   + "title varchar)");
 	}
 

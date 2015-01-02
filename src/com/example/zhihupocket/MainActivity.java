@@ -3,18 +3,22 @@ package com.example.zhihupocket;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
+import com.example.db.MainDBHelper;
 import com.example.news.LoadingPreNew;
 import com.example.news.LoadingTodayNews;
 import com.example.task.StoriesGetTask;
@@ -117,6 +121,9 @@ public class MainActivity extends FragmentActivity {
             case R.id.action_exit:
             	finish();
                 return true;
+            case R.id.clear_cache:
+            	clearCache();
+            	return true;
             default:
             	return super.onOptionsItemSelected(item);
         }
@@ -132,5 +139,43 @@ public class MainActivity extends FragmentActivity {
 		else {
 			return super.onKeyDown(keyCode, event);
 		}
+	}
+	
+	// 特殊指令
+	public void clearCache(){
+		AlertDialog.Builder builder = new Builder(MainActivity.this);
+		builder.setMessage("你确定清空缓存");
+		builder.setTitle("提示");
+		builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				//这个是对话框要消失时的对话框
+				arg0.dismiss();
+				SQLiteDatabase db = null;
+				MainDBHelper mdbhelper = null;
+				try{
+					mdbhelper = new MainDBHelper(getApplicationContext(), MainDBHelper.DATABASE_NAME, null, 1);
+					db = mdbhelper.getReadableDatabase();
+					db.close();
+					if(getApplicationContext().deleteDatabase(MainDBHelper.DATABASE_NAME)){
+						Toast.makeText(getApplicationContext(), "已成功清除缓存……", Toast.LENGTH_SHORT).show();
+					}
+					else {
+						Toast.makeText(getApplicationContext(), "Sorry,出了一些故障", Toast.LENGTH_SHORT).show();
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					db.close();
+				}
+			}
+		});
+		builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				arg0.dismiss();
+			}
+		});
+		builder.create().show();
 	}
 }
