@@ -8,6 +8,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
 public class HttpRequestData {
 	
 	// 通过请求URL获取数据,返回-1的话代表连接失败
@@ -25,6 +27,7 @@ public class HttpRequestData {
 				HttpEntity httpEntity = httpresponse.getEntity();
 				//获得返回的字符串
 				String json_data = EntityUtils.toString(httpEntity, "utf-8");
+				Log.v("HttpRequestData", "成功解析并返回");
 				return json_data;
 			}
 			else{

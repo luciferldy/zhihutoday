@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
 import com.example.db.StoriesHandleSQLite;
 import com.example.db.TopStoriesHandleSQLite;
 import com.example.news.LoadingBaseNews;
@@ -11,6 +12,7 @@ import com.example.zhihupocket.MainActivity;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
@@ -63,8 +65,9 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 			}
 			return false;
 		}
-		// 从数据库中查询有没有软件
+		// 从数据库中查询有没有消息
 		else {
+			Log.v("StoriesGetTask", "从数据库中搜索消息");
 			topstories_group = (top).getTopStoriesFromDB();
 			stories_group = (general).getStoriesFromDB();
 			if (stories_group != null && topstories_group != null) {
@@ -104,8 +107,9 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 			return false;
 		}
 		else {
+			Log.v("StoriesGetTask", "获得线上的今日的消息");
 			stories_group = (new ParseJsonStories(json_data)).getStories();
-			topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
+			topstories_group = (new ParseJsonTopStories(json_data)).getTopStories();
 			if (stories_group!=null&&topstories_group!=null) {
 				return true;
 			}
@@ -125,7 +129,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 		}
 		else {
 			stories_group = (new ParseJsonStories(json_data)).getStories();
-			topstories_group = (new ParseJsonHotStories(json_data)).getHotStories();
+			topstories_group = (new ParseJsonTopStories(json_data)).getTopStories();
 			if (stories_group!=null) {
 				return true;
 			}

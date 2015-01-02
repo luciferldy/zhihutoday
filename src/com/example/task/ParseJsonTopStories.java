@@ -8,14 +8,14 @@ import org.json.JSONObject;
 
 import com.example.zhihupocket.MainActivity;
 
-public class ParseJsonHotStories {
+public class ParseJsonTopStories {
 	
 	ArrayList<HashMap<String, Object>> topstories_group = new ArrayList<HashMap<String,Object>>();
-	public ParseJsonHotStories(String json_data){
+	public ParseJsonTopStories(String json_data){
 		transJsonTopStoriesIntoArrayList(json_data);
 	}
 	
-	public ArrayList<HashMap<String, Object>> getHotStories(){
+	public ArrayList<HashMap<String, Object>> getTopStories(){
 		return topstories_group;
 	}
 	

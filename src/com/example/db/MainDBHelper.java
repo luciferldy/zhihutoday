@@ -25,13 +25,15 @@ public class MainDBHelper extends SQLiteOpenHelper{
 				+ "date varchar,"
                 + "image varchar,"  
                 + "id varchar,"
-                + "type varchar"
+                + "type varchar,"
+                + "ga_prefix varchar,"
                 + "title varchar)");
 		db.execSQL("create table if not exists stories_cache("  
                   + "date varchar,"  
                   + "images varchar,"
-                  + "id varchar"
-                  + "type varchar"
+                  + "id varchar,"
+                  + "ga_prefix varchar,"
+                  + "type varchar,"
                   + "title varchar)");
 	}
 
