@@ -31,7 +31,16 @@ public class StoriesHandleSQLite {
 	public boolean storedStoriesIntoDB(ArrayList<HashMap<String, Object>> stories_group){
 		try {
 			dbhelper = new MainDBHelper(context, MainDBHelper.DATABASE_NAME, null, 1);
+			// 先判断数据库中有木有
+			db = dbhelper.getReadableDatabase();
+			Cursor cursor = db.query(MainDBHelper.TABLE_STORIES, new String[]{"id"},"date="+date, null, null, null, null, null);
+			// 删除数据库中原来有记录
 			db = dbhelper.getWritableDatabase();
+			if (cursor.getCount()!=0) {
+				String del = "delete from '"+MainDBHelper.TABLE_STORIES+"' where date='"+date+"'";
+				db.execSQL(del);
+			}
+			// 重新写入
 			ContentValues values = new ContentValues();
 			for (int i = 0; i < stories_group.size(); i++) {
 				 values.put("date", date);
@@ -59,7 +68,7 @@ public class StoriesHandleSQLite {
 		try {
 			dbhelper = new MainDBHelper(context, MainDBHelper.DATABASE_NAME, null, 1);
 			db = dbhelper.getReadableDatabase();
-			Cursor cursor = db.query(MainDBHelper.TABLE_STORIES, new String[]{"id", "images", "title", "type", "share_url", "ga_prefix"},"date="+date, null, null, null, "ga_prefix", null);
+			Cursor cursor = db.query(MainDBHelper.TABLE_STORIES, new String[]{"id", "images", "title", "type", "share_url", "ga_prefix"},"date="+date, null, null, null, "ga_prefix DESC", null);
 			Log.v("TopStoriesHandleSQLite.getStoriesFromDB", cursor.getColumnCount()+"");
 			if (cursor.getCount()==0) {
 				Toast.makeText(context, "数据库出现错误！", Toast.LENGTH_SHORT).show();
