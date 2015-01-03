@@ -132,13 +132,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		if(keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() ==0){
-			System.exit(0);
-			return true;
-		}
-		else {
-			return super.onKeyDown(keyCode, event);
-		}
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	// 特殊指令

@@ -56,10 +56,10 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 		StoriesHandleSQLite general = new StoriesHandleSQLite(main, calendar);
 		// 先尝试从网络上获取今日的消息
 		if (getTodayNewsFromOnLine()) {
-			
 			// 存入数据库
 			if (top.storedTopStoriesIntoDB(topstories_group)&&general.storedStoriesIntoDB(stories_group)) {
 				// 在runviews之后需要进行修改系统时间
+				Log.v("StoriesGetTask", "成功从网络处获得今日消息并存入数据库");
 				MainActivity.sys_calendar = Calendar.getInstance();
 				return true;
 			}
@@ -120,9 +120,10 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	
 	// 从网络上获得之前新闻
 	public boolean getPreNewsFromOnLine(Calendar calendar){
-		// 将日历提前一天
-		calendar.add(Calendar.DATE, 1);
-		Date format = calendar.getTime();
+		// 将日历提前一天,这个要是直接用形参额话有bug
+		Calendar calendar2 = calendar;
+		calendar2.add(Calendar.DATE, 1);
+		Date format = calendar2.getTime();
 		String date = MainActivity.DATEFORMAT.format(format);
 		json_data = HttpRequestData.getJsonContent(MainActivity.ZHIHU_API_BEFORE+date); 
 		if (json_data.equals("-1")) {
