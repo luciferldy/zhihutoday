@@ -7,9 +7,10 @@ import com.example.fragment.MainHotStoriesFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
-public class HotStoriesPagersAdapter extends FragmentPagerAdapter {
+public class HotStoriesPagersAdapter extends FragmentStatePagerAdapter {
 
 	private final String[] TITLES = { "one", "two", "three", "four", "five"};
 	private ArrayList<HashMap<String, Object>> top_stories = new ArrayList<HashMap<String, Object>>();
@@ -33,6 +34,11 @@ public class HotStoriesPagersAdapter extends FragmentPagerAdapter {
 	@Override
 	public Fragment getItem(int position) {
 		return MainHotStoriesFragment.newInstance(position, top_stories);
+	}
+	
+	@Override
+	public int getItemPosition(Object object){
+		return PagerAdapter.POSITION_NONE;
 	}
 
 }

@@ -48,10 +48,9 @@ public class LoadingPreNew implements LoadingBaseNews{
 	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
 		//在ui线程中设置listview
-		Calendar calendar = MainActivity.sys_calendar;
-		String date = String.valueOf(calendar.get(Calendar.YEAR))+"年"+
-		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
-		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
+		String date = String.valueOf(MainActivity.sys_calendar.get(Calendar.YEAR))+"年"+
+		       String.valueOf(MainActivity.sys_calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
+		       String.valueOf(MainActivity.sys_calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
 		lv_header.setText(date);
 		// 将将数据存入数据库 
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);

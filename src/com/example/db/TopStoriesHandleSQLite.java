@@ -1,7 +1,6 @@
 package com.example.db;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -21,9 +20,9 @@ public class TopStoriesHandleSQLite {
 	private SQLiteDatabase db;
 	private String date;
 	
-	public TopStoriesHandleSQLite(Context context, Calendar calendar){
+	public TopStoriesHandleSQLite(Context context){
 		this.context = context;
-		Date format = calendar.getTime();
+		Date format = MainActivity.sys_calendar.getTime();
 		date = MainActivity.DATEFORMAT.format(format);
 	}
 	

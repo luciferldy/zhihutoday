@@ -21,9 +21,9 @@ public class StoriesHandleSQLite {
 	SQLiteDatabase db;
 	String date;
 	
-	public StoriesHandleSQLite(Context context, Calendar calendar){
+	public StoriesHandleSQLite(Context context){
 		this.context = context;
-		Date format = calendar.getTime();
+		Date format = MainActivity.sys_calendar.getTime();
 		date = MainActivity.DATEFORMAT.format(format);
 	}
 	

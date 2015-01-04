@@ -30,7 +30,8 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	private ListView lv_showshortcontent;
 	private TextView tv_todaynews;
 	private MainActivity main;
-	private PullToRefreshScrollView main_swiperefresh; 
+	private PullToRefreshScrollView main_swiperefresh;
+	private ArrayList<HashMap<String, Object>> m_topstoriesgroup = new ArrayList<HashMap<String,Object>>();
 	
 	public LoadingTodayNews(MainActivity main, PullToRefreshScrollView main_swiperefresh) {
 		// TODO Auto-generated constructor stub
@@ -44,7 +45,7 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		
 		LinearLayout main_ll = (LinearLayout) main.findViewById(R.id.main_rl);
 		// 清除layout里面的视图
-		main_ll.removeAllViewsInLayout();
+		main_ll.removeAllViews();
 		
 		LayoutInflater layoutInflater = LayoutInflater.from(main);
 		LinearLayout ll = (LinearLayout)layoutInflater.inflate(R.layout.main_hotstoriescontent, null);
@@ -57,13 +58,14 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	
 	// 加载视图
 	@Override
-	public void runView(ArrayList<HashMap<String, Object>> stories_group, final ArrayList<HashMap<String, Object>> topstories_group){
+	public void runView(ArrayList<HashMap<String, Object>> stories_group, ArrayList<HashMap<String, Object>> topstories_group){
 		// TODO Auto-generated method stub
-		//在ui线程中设置listview
-		Calendar calendar = MainActivity.sys_calendar;
-		String date = String.valueOf(calendar.get(Calendar.YEAR))+"年"+
-		       String.valueOf(calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
-		       String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
+		// 在ui线程中设置listview
+		// 先对这个进行赋值
+		m_topstoriesgroup = topstories_group;
+		String date = String.valueOf(MainActivity.sys_calendar.get(Calendar.YEAR))+"年"+
+		       String.valueOf(MainActivity.sys_calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
+		       String.valueOf(MainActivity.sys_calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
 		tv_todaynews.setText(date);
 		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);
@@ -72,7 +74,10 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		// 设置当互动到当前的listitem时才去加载图片
 		lv_showshortcontent.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
 		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(main.getApplicationContext(), stories_group));
-		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(main.getSupportFragmentManager(), topstories_group));
+		
+		System.out.println(m_topstoriesgroup.size());
+		
+		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(main.getSupportFragmentManager(), m_topstoriesgroup));
 		hotstoriespagers.setVisibility(View.VISIBLE);
 		// 添加点击监听器
 		hotstoriespagers.setOnClickListener(new View.OnClickListener() {	
@@ -85,7 +90,7 @@ public class LoadingTodayNews implements LoadingBaseNews{
 				int i = hotstoriespagers.getCurrentItem()+1;
 				i = i<5?i:i-5;
 				Intent intent = new Intent(main, StoryContent.class);
-				intent.putExtra("stories_group", topstories_group);
+				intent.putExtra("stories_group", m_topstoriesgroup);
 				// 万万没想到，标记的时候这个是反着来的
 				intent.putExtra("story_order", i);
 				main.startActivity(intent);

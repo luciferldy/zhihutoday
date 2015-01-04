@@ -119,7 +119,7 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_exit:
-            	finish();
+            	System.exit(0);
                 return true;
             case R.id.clear_cache:
             	clearCache();
