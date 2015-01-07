@@ -9,6 +9,6 @@ Theme.AppCompat.Light
 
 有图有真相
 
-![liandongyang](https://github.com/MaybeMercy/zhihutoday/blob/master/screen_shot/zhihu.png "主屏幕")
+![liandongyang](https://github.com/MaybeMercy/zhihutoday/blob/master/screen_shot/zhihu.PNG "主屏幕")
 
 [最新版本下载地址](http://1.coolgrammar.sinaapp.com/zhihupocket/zhihupocket.apk)
