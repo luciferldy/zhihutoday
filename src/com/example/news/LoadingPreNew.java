@@ -30,8 +30,6 @@ public class LoadingPreNew implements LoadingBaseNews{
 		// TODO Auto-generated constructor stub
 		this.main = main;
 		this.main_swiperefresh = main_swiperefresh;
-		initView();
-		
 	}
 	// 初始化视图
 	@SuppressLint("InlinedApi")

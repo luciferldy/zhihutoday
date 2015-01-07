@@ -144,7 +144,8 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 	
 	@Override  
     protected void onPostExecute(Boolean result) {    
-        if (result) {  
+        if (result) {
+        	loadingnews.initView();
             loadingnews.runView(stories_group, topstories_group);
         } else {  
         	Toast.makeText(main, "没有成功从网络处获得数据", Toast.LENGTH_SHORT).show();
