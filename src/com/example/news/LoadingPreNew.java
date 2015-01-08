@@ -24,7 +24,6 @@ public class LoadingPreNew implements LoadingBaseNews{
 	private TextView lv_header;
 	private MainActivity main;
 	private PullToRefreshScrollView main_swiperefresh;
-	private String date;
 	
 	public LoadingPreNew(MainActivity main, PullToRefreshScrollView main_swiperefresh) {
 		// TODO Auto-generated constructor stub
@@ -32,7 +31,7 @@ public class LoadingPreNew implements LoadingBaseNews{
 		this.main_swiperefresh = main_swiperefresh;
 	}
 	// 初始化视图
-	@SuppressLint("InlinedApi")
+	@SuppressLint({ "InlinedApi", "InflateParams" })
 	public void initView(){
 		LinearLayout main_ll = (LinearLayout) main.findViewById(R.id.main_rl);
 		LayoutInflater layoutInflater = LayoutInflater.from(main);
