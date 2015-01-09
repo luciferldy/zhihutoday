@@ -64,7 +64,8 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		m_topstoriesgroup = topstories_group;
 		String date = String.valueOf(MainActivity.sys_calendar.get(Calendar.YEAR))+"年"+
 		       String.valueOf(MainActivity.sys_calendar.get(Calendar.MONTH) + 1)+"月"+// 获取当前月份  
-		       String.valueOf(MainActivity.sys_calendar.get(Calendar.DAY_OF_MONTH))+"日";// 获取当前月份的日期号码
+		       String.valueOf(MainActivity.sys_calendar.get(Calendar.DAY_OF_MONTH))+"日"// 获取当前月份的日期号码
+		       +"  今天";
 		tv_todaynews.setText(date);
 		
 		StoriesAdapter loadlistadapter = new StoriesAdapter(main.getApplicationContext(), stories_group);

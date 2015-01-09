@@ -11,23 +11,27 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class StoryContent extends Activity{
 	
 	private ArrayList<HashMap<String, Object>> top_or_not_stories_group;
 	private int story_order;
+	@SuppressWarnings("unused")
 	private int story_number;
 	private WebView wv_show_story;
+	private ProgressBar progress;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.story_content);
-		
 		//添加一个回退键
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -58,6 +62,7 @@ public class StoryContent extends Activity{
 	@SuppressLint("SetJavaScriptEnabled")
 	public void initAllView(){
 		wv_show_story = (WebView)findViewById(R.id.wv_show_story);
+		progress = (ProgressBar)findViewById(R.id.pb_show_progress);
 		// 支持缩放
 		wv_show_story.getSettings().setBuiltInZoomControls(false);
 		wv_show_story.getSettings().setJavaScriptEnabled(true);
@@ -74,12 +79,24 @@ public class StoryContent extends Activity{
 				return true;
 //				return super.shouldOverrideUrlLoading(view, url);
 			}
+			
 			@Override
 			public void onReceivedError(WebView view, int errorCode,
 					String description, String failingUrl) {
 				// TODO Auto-generated method stub
 				Toast.makeText(getApplicationContext(), "Oh no, "+description, Toast.LENGTH_SHORT).show();
 //				super.onReceivedError(view, errorCode, description, failingUrl);
+			}
+		});
+		wv_show_story.setWebChromeClient(new WebChromeClient(){
+			@Override
+			public void onProgressChanged(WebView view, int newProgress){
+				super.onProgressChanged(view, newProgress);
+				progress.setProgress(newProgress);
+				// 当进度到100%时，结束，视图变为不见
+				if (newProgress == 100 || wv_show_story.getHeight()!=0) {
+					progress.setVisibility(View.GONE);
+				}
 			}
 		});
 		wv_show_story.loadUrl(top_or_not_stories_group.get(story_order).get("share_url").toString());
