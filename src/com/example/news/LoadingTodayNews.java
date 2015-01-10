@@ -7,11 +7,13 @@ import java.util.HashMap;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.adapter.HotStoriesPagersAdapter;
@@ -32,6 +34,8 @@ public class LoadingTodayNews implements LoadingBaseNews{
 	private MainActivity main;
 	private PullToRefreshScrollView main_swiperefresh;
 	private ArrayList<HashMap<String, Object>> m_topstoriesgroup = new ArrayList<HashMap<String,Object>>();
+	private ArrayList<View> dots = new ArrayList<View>();
+	private int oldPosition=0;
 	
 	public LoadingTodayNews(MainActivity main, PullToRefreshScrollView main_swiperefresh) {
 		// TODO Auto-generated constructor stub
@@ -47,11 +51,19 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		main_ll.removeAllViews();
 		
 		LayoutInflater layoutInflater = LayoutInflater.from(main);
-		LinearLayout ll = (LinearLayout)layoutInflater.inflate(R.layout.main_hotstoriescontent, null);
-		hotstoriespagers = (ViewPager)ll.getChildAt(0);
-		tv_todaynews = (TextView)ll.getChildAt(1);
-		lv_showshortcontent = (ListView)ll.getChildAt(2);
-		main_ll.addView(ll);
+		RelativeLayout hotstories_container = (RelativeLayout)layoutInflater.inflate(R.layout.main_hotstoriescontent, null);
+		hotstoriespagers = (ViewPager)hotstories_container.getChildAt(0);
+		// 包含原点的容器
+		LinearLayout dots_container = (LinearLayout)hotstories_container.getChildAt(1);
+		dots_container.setVisibility(View.VISIBLE);
+		View dot;
+		for (int i = 0; i < 5; i++) {
+			dot = (View)dots_container.getChildAt(i);
+			dots.add(dot);
+		}
+		tv_todaynews = (TextView)hotstories_container.getChildAt(2);
+		lv_showshortcontent = (ListView)hotstories_container.getChildAt(3);
+		main_ll.addView(hotstories_container);
 		
 	}
 	
@@ -74,9 +86,6 @@ public class LoadingTodayNews implements LoadingBaseNews{
 		// 设置当互动到当前的listitem时才去加载图片
 		lv_showshortcontent.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
 		lv_showshortcontent.setOnItemClickListener(new StoryItemClickListener(main.getApplicationContext(), stories_group));
-		
-		System.out.println(m_topstoriesgroup.size());
-		
 		hotstoriespagers.setAdapter(new HotStoriesPagersAdapter(main.getSupportFragmentManager(), m_topstoriesgroup));
 		hotstoriespagers.setVisibility(View.VISIBLE);
 		// 添加点击监听器
@@ -94,6 +103,29 @@ public class LoadingTodayNews implements LoadingBaseNews{
 				// 万万没想到，标记的时候这个是反着来的
 				intent.putExtra("story_order", i);
 				main.startActivity(intent);
+			}
+		});
+		
+		hotstoriespagers.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int arg0) {
+				// TODO Auto-generated method stub
+				dots.get(arg0).setBackgroundResource(R.drawable.dot_focused);
+				dots.get(oldPosition).setBackgroundResource(R.drawable.dot_normal);
+				oldPosition = arg0;
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	    main_swiperefresh.onRefreshComplete();

@@ -2,6 +2,7 @@ package com.example.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.example.zhihupocket.R;
 import com.example.zhihupocket.StoryContent;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -10,6 +11,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,9 +21,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,12 +80,12 @@ public class MainHotStoriesFragment extends Fragment implements OnClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		FrameLayout fl = (FrameLayout)inflater.inflate(R.layout.vf_show_item, null);
-		fl.setOnClickListener(this);
-		ImageView pic = (ImageView)fl.getChildAt(0);
-		TextView txt = (TextView)fl.getChildAt(1);
+		RelativeLayout pager_item_container = (RelativeLayout)inflater.inflate(R.layout.vf_show_item, null);
+		pager_item_container.setOnClickListener(this);
+		ImageView pic = (ImageView)pager_item_container.getChildAt(0);
+		TextView txt = (TextView)pager_item_container.getChildAt(1);
 		txt.setText(top_stories.get(position).get("title").toString());
-		final ProgressBar spinner = (ProgressBar) fl.getChildAt(2);
+		final ProgressBar spinner = (ProgressBar) pager_item_container.getChildAt(2);
 
 		ImageLoader.getInstance().displayImage(top_stories.get(position).get("image").toString(),
 				pic, options, new SimpleImageLoadingListener() {
@@ -121,7 +123,7 @@ public class MainHotStoriesFragment extends Fragment implements OnClickListener{
 				spinner.setVisibility(View.GONE);
 			}
 		});
-		return fl;
+		return pager_item_container;
 	}
 
 	@Override
