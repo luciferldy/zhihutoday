@@ -122,7 +122,8 @@ public class MainActivity extends FragmentActivity {
             	System.exit(0);
                 return true;
             case R.id.clear_cache:
-            	clearCache();
+            	clearDBCache();
+            	clearImageCache();
             	return true;
             default:
             	return super.onOptionsItemSelected(item);
@@ -136,7 +137,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	// 特殊指令
-	public void clearCache(){
+	public void clearDBCache(){
 		AlertDialog.Builder builder = new Builder(MainActivity.this);
 		builder.setMessage("你确定清空缓存");
 		builder.setTitle("提示");
@@ -171,5 +172,18 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 		builder.create().show();
+	}
+	
+	public boolean clearImageCache(){
+		File pic_cache = new File(Environment.getExternalStorageDirectory(), "zhihupocketcache");
+		if(!pic_cache.exists()){
+			return false;
+		}
+		else {
+			for (File i : pic_cache.listFiles()) {
+				i.delete();
+			}
+		}
+		return true;
 	}
 }
