@@ -11,7 +11,8 @@
         android:adjustViewBounds="true"
         android:contentDescription="新闻图片"
         android:scaleType="centerCrop"
-        android:src="@drawable/example" />
+        android:src="@drawable/example" 
+       	android:visibility="visible"/>
 
      <TextView
          android:id="@+id/tv_show_topstory_title"
@@ -23,11 +24,14 @@
          android:layout_marginRight="20dp"
          android:text="如果兔子都在拼命的奔跑，作为乌龟的你为什么为什么还在继续向前？"
          android:textColor="#FFFFFF"
-         android:textSize="20sp" />
-     <ProgressBar 
+         android:textSize="20sp"
+         android:visibility="visible"/>
+
+     <ProgressBar
          android:id="@+id/topstory_loading"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_gravity="center"
-         android:visibility="gone"/>
+         android:layout_centerInParent="true"
+         android:visibility="gone" />
+
 </RelativeLayout>

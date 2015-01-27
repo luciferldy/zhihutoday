@@ -33,6 +33,6 @@
         android:layout_marginBottom="8dp"
         android:text="请尽量只从纯技术角度看待 12 岁的「中国最小黑客」"
         android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>
