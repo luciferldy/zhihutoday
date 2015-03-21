@@ -172,7 +172,7 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 		builder.create().show();
-	}
+	}	
 	
 	public boolean clearImageCache(){
 		File pic_cache = new File(Environment.getExternalStorageDirectory(), "zhihupocketcache");
