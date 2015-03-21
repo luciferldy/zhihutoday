@@ -1,14 +1,18 @@
-﻿zhihutoday
+﻿知乎日报·今日
 ==========
 
-一款山寨版的知乎日报，很小，能够在线查看知乎今日推送的消息。
+### 简介
 
-android 4.4.2 
+一款轻量级的知乎日报，能够抓取知乎日报上的所有内容，能够缓存部分内容，不支持离线查看。开发环境为Eclipse。
 
-Theme.AppCompat.Light
+### 依赖
 
-有图有真相
+android-support-v7-appcompat.jar  
+handmark pulltorefresh  
+nostra13 universalimageloader  
 
-![liandongyang](https://github.com/MaybeMercy/zhihutoday/blob/master/screen_shot/zhihu.PNG "主屏幕")
+### 其他
 
+有图有真相  
+![liandongyang](https://github.com/MaybeMercy/zhihutoday/blob/master/screen_shot/zhihu.PNG "主屏幕")  
 [最新版本下载地址](http://1.coolgrammar.sinaapp.com/zhihupocket/zhihupocket.apk)
