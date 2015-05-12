@@ -77,7 +77,7 @@ public class StoriesGetTask extends AsyncTask<Void, Integer, Boolean>{
 		}
 	}
 	
-	// 获得今天的数据
+	// 获得之前的数据
 	public boolean getPreNews(){
 		StoriesHandleSQLite general = new StoriesHandleSQLite(main);
 		stories_group = general.getStoriesFromDB();
