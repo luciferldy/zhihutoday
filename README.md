@@ -1,18 +1,35 @@
-﻿知乎日报·今日
+知乎日报·今日
 ==========
 
 ### 简介
 
-一款轻量级的知乎日报，能够抓取知乎日报上的所有内容，能够缓存部分内容，不支持离线查看。开发环境为Eclipse。
+一款轻量级的知乎日报APP，能够抓取知乎日报上的所有内容，能够缓存标题和简介，不支持离线查看。
 
-### 依赖
+开发环境为Eclipse。
+
+### 需要用到的包
 
 android-support-v7-appcompat.jar  
 handmark pulltorefresh  
 nostra13 universalimageloader  
 
-### 其他
+### 详细介绍
 
-有图有真相  
-![liandongyang](screen_shot/zhihu.PNG "主屏幕")  
-[最新版本下载地址](http://1.coolgrammar.sinaapp.com/zhihupocket/zhihupocket.apk)
+主屏幕界面
+ 
+![main](screen_shot/zhihu.PNG "主屏幕")
+
+内容界面
+
+![detail](screen_shot/detail.png "详细")
+
+
+消息获取机制：对于今日消息先进行网络访问，成功获得数据后存入本地数据库，无网络连接时检索本地数据库；对于往日的消息，采用先检索本地数据库，数据库里没有信息的话，进行网络访问，成功后将将数据存入本地数据库
+
+图片加载：使用开源框架universalimageloader, 使用所需图片的缩略图
+
+刷新机制：使用pulltorefresh进行下拉刷新或者上拉刷新，每次下拉刷新清除所有视图，并且重绘今日消息的视图，每次上拉刷新是插入新的视图
+
+内容界面：使用webview进行网页的加载
+
+[最新版本下载地址](https://gitcafe.com/MaybeMercy/AppLibrary/raw/master/zhihupocket.apk)
