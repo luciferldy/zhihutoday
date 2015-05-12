@@ -40,6 +40,7 @@ public class MainActivity extends FragmentActivity {
 	public static Calendar sys_calendar;
 	@SuppressLint("SimpleDateFormat")
 	public static SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
+	private  PullToRefreshScrollView main_swiperefresh;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,8 @@ public class MainActivity extends FragmentActivity {
 		initImageLoaderConfigurations();
 		initPullToRefresh();
 		initCalendar();
+		// 进入界面之后加载今日新闻
+		new StoriesGetTask(MainActivity.this, new LoadingTodayNews(MainActivity.this, main_swiperefresh), main_swiperefresh, "today").execute();
 	}
 	
 	public void initCalendar(){
@@ -57,7 +60,7 @@ public class MainActivity extends FragmentActivity {
 	
 	// 初始化下拉菜单
 	public void initPullToRefresh(){
-		final PullToRefreshScrollView main_swiperefresh = (PullToRefreshScrollView)findViewById(R.id.main_sv);
+		main_swiperefresh = (PullToRefreshScrollView)findViewById(R.id.main_sv);
 		
 		OnRefreshListener<ScrollView> swiperefresh_listener = new OnRefreshListener<ScrollView>() {
 
