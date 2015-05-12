@@ -125,8 +125,6 @@ public class StoryContent extends Activity{
 		case R.id.story_share:
 			shareStory();
 			return true;
-		case R.id.story_collect:
-			return true;
 		case R.id.story_exit:
 			finish();
 			return true;
