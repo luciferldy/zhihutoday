@@ -9,9 +9,11 @@
 
 ### 需要用到的包
 
-android-support-v7-appcompat.jar  
-handmark pulltorefresh  
-nostra13 universalimageloader  
+android-support-v7-appcompat.jar
+
+[pulltorefresh](https://github.com/chrisbanes/Android-PullToRefresh)
+
+[universalimageloader](https://github.com/nostra13/Android-Universal-Image-Loader)
 
 ### 详细介绍
 
