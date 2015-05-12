@@ -3,7 +3,8 @@
         android:id="@+id/story_share"
         android:title="分享"
         android:icon="@drawable/ic_action_share"
-        android:showAsAction="always">
+        android:showAsAction="always"
+        android:actionProviderClass="android.widget.ShareActionProvider">
     </item>
     <item android:id="@+id/story_exit"
         android:title="退出"
