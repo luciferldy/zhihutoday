@@ -36,3 +36,5 @@ android-support-v7-appcompat.jar
 * 刷新机制：使用pulltorefresh进行下拉刷新或者上拉刷新，每次下拉刷新清除所有视图，并且重绘今日消息的视图，每次上拉刷新是插入新的视图
 
 * 内容界面：使用webview进行网页的加载
+
+* 欢迎Star我
