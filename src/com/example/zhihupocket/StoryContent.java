@@ -160,4 +160,13 @@ public class StoryContent extends Activity{
 		return intent;		
 	}
 	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		if (wv_show_story != null && wv_show_story.canGoBack()) {
+			wv_show_story.goBack();
+		}
+		super.onBackPressed();
+	}
+	
 }
