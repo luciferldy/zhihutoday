@@ -5,7 +5,7 @@
 
 一款轻量级的知乎日报APP，能够抓取知乎日报上的所有内容，能够缓存标题和简介，不支持离线查看。
 
-开发环境为Eclipse。
+开发环境为Eclipse ，另有一份使用 Android Studio 开发的见此处 [https://github.com/luciferldy/ZhihuToday_AS](https://github.com/luciferldy/ZhihuToday_AS)。
 
 [最新版本下载地址](https://gitcafe.com/MaybeMercy/AppLibrary/raw/master/zhihupocket.apk)
 
